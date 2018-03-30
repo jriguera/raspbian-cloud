@@ -1,0 +1,34 @@
+check process sshd with pidfile /run/sshd.pid
+   start program = "/usr/sbin/service ssh start"
+   stop  program = "/usr/sbin/service ssh stop"
+   if failed host localhost port 22 with proto ssh then restart
+   if 3 restarts with 5 cycles then alert
+   if 5 restarts with 5 cycles then timeout
+   depend on sshd_bin
+   depend on sftp_bin
+   depend on sshd_rc
+   depend on sshd_rsa_key
+   depend on sshd_dsa_key
+   group system
+   group sshd
+
+check file sshd_bin with path /usr/sbin/sshd
+   include /etc/monit/templates/rootbin
+   group sshd
+
+check file sftp_bin with path /usr/lib/openssh/sftp-server
+   include /etc/monit/templates/rootbin
+   group sshd
+
+check file sshd_rsa_key with path /etc/ssh/ssh_host_rsa_key
+   include /etc/monit/templates/rootstrict
+   group sshd
+
+check file sshd_dsa_key with path /etc/ssh/ssh_host_dsa_key
+   include /etc/monit/templates/rootstrict
+   group sshd
+
+check file sshd_rc with path /etc/ssh/sshd_config
+   include /etc/monit/templates/rootrc
+   group sshd
+

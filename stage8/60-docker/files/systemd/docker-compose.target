@@ -1,0 +1,12 @@
+[Unit]
+Description=Docker compose target services
+StopWhenUnneeded=true
+Requires=network-online.target docker.service
+After=network-online.target docker.service
+ConditionFileIsExecutable=/usr/bin/docker
+ConditionFileIsExecutable=/usr/local/bin/docker-compose
+
+[Install]
+WantedBy=multi-user.target
+Also=docker-compose-refresh.service
+

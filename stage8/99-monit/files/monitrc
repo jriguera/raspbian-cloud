@@ -1,0 +1,96 @@
+###############################################################################
+## Monit control file
+###############################################################################
+##
+## Comments begin with a '#' and extend through the end of the line. Keywords
+## are case insensitive. All path's MUST BE FULLY QUALIFIED, starting with '/'.
+##
+## Below you will find examples of some frequently used statements. For
+## information about the control file and a complete list of statements and
+## options, please have a look in the Monit manual.
+##
+##
+###############################################################################
+## Global section
+###############################################################################
+##
+## Start Monit in the background (run as a daemon):
+#
+set daemon 120              # check services at 2-minute intervals
+    with start delay 60     # optional: delay the first check by 4-minutes (by
+                            # default Monit check immediately after Monit start)
+
+
+## Set syslog logging. If you want to log to a standalone log file instead,
+## specify the full path to the log file
+#
+# set logfile /var/log/monit.log
+
+## Set the location of the Monit lock file which stores the process id of the
+## running Monit instance. By default this file is stored in $HOME/.monit.pid
+#
+set pidfile /var/run/monit.pid
+
+## Set the location of the Monit id file which stores the unique id for the
+## Monit instance. The id is generated and stored on first Monit start. By
+## default the file is placed in $HOME/.monit.id.
+#
+set idfile /var/lib/monit/id
+
+## Set the location of the Monit state file which saves monitoring states
+## on each cycle. By default the file is placed in $HOME/.monit.state. If
+## the state file is stored on a persistent filesystem, Monit will recover
+## the monitoring state across reboots. If it is on temporary filesystem, the
+## state will be lost on reboot which may be convenient in some situations.
+#
+set statefile /var/lib/monit/state
+
+## Set limits for various tests. The following example shows the default values:
+##
+# set limits {
+#     programOutput:     512 B,      # check program's output truncate limit
+#     sendExpectBuffer:  256 B,      # limit for send/expect protocol test
+#     fileContentBuffer: 512 B,      # limit for file content test
+#     httpContentBuffer: 1 MB,       # limit for HTTP content test
+#     networkTimeout:    5 seconds   # timeout for network I/O
+#     programTimeout:    300 seconds # timeout for check program
+#     stopTimeout:       30 seconds  # timeout for service stop
+#     startTimeout:      30 seconds  # timeout for service start
+#     restartTimeout:    30 seconds  # timeout for service restart
+# }
+
+## By default Monit will drop alert events if no mail servers are available.
+## If you want to keep the alerts for later delivery retry, you can use the
+## EVENTQUEUE statement. The base directory where undelivered alerts will be
+## stored is specified by the BASEDIR option. You can limit the queue size
+## by using the SLOTS option (if omitted, the queue is limited by space
+## available in the back end filesystem).
+#
+set eventqueue
+      basedir /var/lib/monit/events # set the base directory where events will be stored
+      slots 100                     # optionally limit the queue size
+
+## Send status and events to M/Monit (for more informations about M/Monit
+## see https://mmonit.com/). By default Monit registers credentials with
+## M/Monit so M/Monit can smoothly communicate back to Monit and you don't
+## have to register Monit credentials manually in M/Monit. It is possible to
+## disable credential registration using the commented out option below.
+## Though, if safety is a concern we recommend instead using https when
+## communicating with M/Monit and send credentials encrypted. The password
+## should be URL encoded if it contains URL-significant characters like
+## ":", "?", "@".
+#
+# set mmonit http://monit:monit@192.168.1.10:8080/collector
+#     # and register without credentials     # Don't register credentials
+#
+
+###############################################################################
+## Includes
+###############################################################################
+##
+## It is possible to include additional configuration parts from other files or
+## directories.
+#
+include /etc/monit/conf.d/*
+include /etc/monit/conf-enabled/*
+

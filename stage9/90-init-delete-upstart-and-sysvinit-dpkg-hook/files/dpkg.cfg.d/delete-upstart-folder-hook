@@ -1,0 +1,1 @@
+post-invoke=if { test "$DPKG_HOOK_ACTION" = unpack; }; then rm -rf /etc/init; fi

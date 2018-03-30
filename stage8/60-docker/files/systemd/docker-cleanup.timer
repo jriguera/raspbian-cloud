@@ -1,0 +1,12 @@
+[Unit]
+Description=Triggers docker prune to delete unused resources
+Requires=docker.service
+After=docker.service
+ConditionFileIsExecutable=/usr/bin/docker
+
+[Timer]
+OnCalendar=*-*-* 12:00:00
+OnBootSec=10min
+
+[Install]
+WantedBy=timers.target

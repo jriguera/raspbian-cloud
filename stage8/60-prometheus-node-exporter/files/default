@@ -1,0 +1,6 @@
+# Whether or not to run the node-exporter daemon; set to 0 to disable.
+ENABLED=1
+
+# Prometheus node_exporter options
+#OPTIONS="--collector.textfile.directory /var/lib/node_exporter/textfile_collector"
+OPTIONS=""

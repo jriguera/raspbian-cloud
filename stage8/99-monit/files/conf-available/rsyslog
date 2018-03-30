@@ -1,0 +1,13 @@
+check process rsyslogd with pidfile /run/rsyslogd.pid
+   start program = "/usr/sbin/service rsyslog start"
+   stop  program = "/usr/sbin/service rsyslog stop"
+   if 3 restarts with 5 cycles then alert
+   if 5 restarts with 5 cycles then timeout
+   depend on rsyslogd_bin
+   group system
+   group rsyslogd
+
+check file rsyslogd_bin with path /usr/sbin/rsyslogd
+   include /etc/monit/templates/rootbin
+   group rsyslogd
+

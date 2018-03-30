@@ -1,0 +1,14 @@
+[Unit]
+Description=Opensmtpd Mailserver
+ConditionPathExists=/etc/smtpd.conf
+
+[Service]
+Type=simple
+ExecStartPre=/usr/sbin/smtpd -n
+ExecStart=/usr/sbin/smtpd -d
+ExecStop=/usr/sbin/smtpctl stop
+ExecStartPost=/bin/sh -c 'sleep 2 && pgrep -o -x smtpd > /run/smtpd.pid'
+ExecStopPost=/bin/rm -f /run/smtpd.pid
+
+[Install]
+WantedBy=multi-user.target

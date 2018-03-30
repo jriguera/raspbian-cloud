@@ -1,0 +1,2 @@
+# Cloud-init datasource configuration
+cloud-init      cloud-init/datasources  multiselect     NoCloud

@@ -1,0 +1,21 @@
+[Unit]
+Description=Docker compose %I service
+Requires=network-online.target docker.service
+After=network-online.target docker.service
+PartOf=docker-compose.target
+
+[Service]
+WorkingDirectory=/%I
+Type=oneshot
+RemainAfterExit=yes
+User=root
+Group=root
+ExecStartPre=/usr/local/bin/docker-compose --no-ansi rm -fv
+ExecStart=/usr/local/bin/docker-compose --no-ansi up -d
+ExecStop=/usr/local/bin/docker-compose --no-ansi down
+ExecReload=/usr/local/bin/docker-compose --no-ansi pull
+ExecReload=/usr/local/bin/docker-compose --no-ansi up -d
+
+[Install]
+WantedBy=docker-compose.target
+Also=docker-compose-refresh@%i.service

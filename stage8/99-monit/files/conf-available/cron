@@ -1,0 +1,20 @@
+check process crond with pidfile /run/crond.pid
+   start program = "/usr/sbin/service cron start"
+   stop  program = "/usr/sbin/service cron stop"
+   if 3 restarts with 5 cycles then alert
+   if 5 restarts with 5 cycles then timeout
+   depend cron_bin
+   depend cron_spool
+   group system
+   group crond
+
+check file cron_bin with path /usr/sbin/cron
+   include /etc/monit/templates/rootbin
+   group crond
+
+check directory cron_spool with path /var/spool/cron/crontabs
+   if failed permission 1730 then alert
+   if failed uid root        then alert
+   if failed gid crontab     then alert
+   group crond
+

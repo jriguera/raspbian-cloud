@@ -1,0 +1,18 @@
+[Unit]
+Description=Docker compose %I refresh and reload
+StopWhenUnneeded=true
+Requires=network-online.target docker.service docker-compose.target
+After=network-online.target docker.service docker-compose.target
+PartOf=docker-compose-refresh.service
+
+[Service]
+WorkingDirectory=/%I
+Type=oneshot
+User=root
+Group=root
+ExecStartPre=/usr/local/bin/docker-compose --no-ansi pull
+ExecStart=/usr/local/bin/docker-compose --no-ansi up -d
+
+[Install]
+WantedBy=docker-compose-refresh.service
+Also=docker-compose-refresh.timer

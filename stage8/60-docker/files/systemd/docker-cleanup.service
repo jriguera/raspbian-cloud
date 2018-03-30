@@ -1,0 +1,17 @@
+[Unit]
+Description=Docker cleanup
+Requires=docker.service
+After=docker.service
+ConditionFileIsExecutable=/usr/bin/docker
+
+[Service]
+Type=oneshot
+WorkingDirectory=/tmp
+User=root
+Group=root
+ExecStart=/usr/bin/docker system prune -f
+
+[Install]
+WantedBy=multi-user.target docker.service
+Also=docker-cleanup.timer
+

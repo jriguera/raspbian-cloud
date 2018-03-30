@@ -1,0 +1,19 @@
+[Unit]
+Description=Pro-active monitoring utility for unix systems
+After=network.target
+ConditionPathExists=!/etc/monit/monit_not_to_be_run
+
+[Service]
+EnvironmentFile=-/etc/default/monit
+ExecStartPre=/bin/sh -c "test x$START = xyes || exit 1"
+ExecStart=/usr/bin/monit -I $MONIT_OPTS
+ExecStop=/usr/bin/monit quit
+ExecReload=/usr/bin/monit reload
+KillMode=process
+Restart=on-failure
+RestartPreventExitStatus=255
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
+
