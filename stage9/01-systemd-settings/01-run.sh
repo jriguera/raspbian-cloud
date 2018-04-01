@@ -8,8 +8,8 @@ install -m 644 -g root -o root files/journald.conf ${ROOTFS_DIR}/etc/systemd/
 
 # Enable systemd-timesyncd
 on_chroot << EOF
-systemctl enable systemd-timesyncd
-timedatectl set-ntp true
+# timedatectl set-ntp true
+systemctl enable systemd-timesyncd.service
 EOF
 
 # Add watchdog

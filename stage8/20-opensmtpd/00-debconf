@@ -1,0 +1,5 @@
+# System mail name:
+opensmtpd	opensmtpd/mailname	string	raspi.local
+# Root and postmaster mail recipient:
+opensmtpd       opensmtpd/root_address  string  pi
+

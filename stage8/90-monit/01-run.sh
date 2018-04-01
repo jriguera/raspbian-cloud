@@ -15,9 +15,9 @@ systemctl enable monit
 # Enable services
 mkdir -p /etc/monit/conf-enabled
 cd /etc/monit/conf-enabled
-ln -s ../conf-available/dnsmasq
-ln -s ../conf-available/docker
-ln -s ../conf-available/node_exporter
-ln -s ../conf-available/opensmtpd
-ln -s ../conf-available/openssh-server
+ln -sf ../conf-available/dnsmasq
+ln -sf ../conf-available/docker
+ln -sf ../conf-available/node_exporter
+ln -sf ../conf-available/opensmtpd
+ln -sf ../conf-available/openssh-server
 EOF
