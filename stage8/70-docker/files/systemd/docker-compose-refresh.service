@@ -2,6 +2,7 @@
 Description=Docker compose refresh and reload target
 StopWhenUnneeded=true
 Requires=network-online.target docker.service docker-compose.target
+Wants=network-online.target docker.service docker-compose.target
 After=network-online.target docker.service docker-compose.target
 ConditionFileIsExecutable=/usr/bin/docker
 ConditionFileIsExecutable=/usr/local/bin/docker-compose

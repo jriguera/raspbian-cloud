@@ -1,9 +1,7 @@
 #!/bin/bash -e
 
 install -m 644 -g root -o root files/cloud.cfg ${ROOTFS_DIR}/etc/cloud/
-install -m 644 -g root -o root files/cloud.cfg.d/01_grow_sd ${ROOTFS_DIR}/etc/cloud/cloud.cfg.d/
-install -m 644 -g root -o root files/cloud.cfg.d/05_logging.cfg ${ROOTFS_DIR}/etc/cloud/cloud.cfg.d/
-install -m 644 -g root -o root files/cloud.cfg.d/95_datasource_nocloud.cfg ${ROOTFS_DIR}/etc/cloud/cloud.cfg.d/
+install -m 644 -g root -o root files/cloud.cfg.d/* ${ROOTFS_DIR}/etc/cloud/cloud.cfg.d/
 install -m 644 -g root -o root files/templates/sources.list.debian.tmpl ${ROOTFS_DIR}/etc/cloud/templates/
 
 # Redirect logs to tty in systemd

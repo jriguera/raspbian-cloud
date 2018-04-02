@@ -2,6 +2,7 @@
 Description=Docker compose %I refresh and reload
 StopWhenUnneeded=true
 Requires=network-online.target docker.service docker-compose.target
+Wants=network-online.target docker.service docker-compose.target
 After=network-online.target docker.service docker-compose.target
 PartOf=docker-compose-refresh.service
 

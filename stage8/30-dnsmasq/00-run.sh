@@ -9,5 +9,3 @@ on_chroot << EOF
 rm -f /lib/systemd/system/dnsmasq.service
 systemctl enable dnsmasq
 EOF
-
-

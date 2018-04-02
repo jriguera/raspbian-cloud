@@ -5,7 +5,7 @@ After=docker-compose.target
 
 [Timer]
 OnCalendar=Fri *-*-* 08:00:00
-OnBootSec=15min
+OnBootSec=45min
 Unit=docker-compose-refresh.service
 
 [Install]

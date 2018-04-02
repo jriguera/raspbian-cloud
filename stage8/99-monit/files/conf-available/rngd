@@ -1,0 +1,8 @@
+check process rngd with pidfile /run/rngd.pid
+   start program = "/usr/sbin/service rng-tools start"
+   stop  program = "/usr/sbin/service rng-tools stop"
+   if 3 restarts with 5 cycles then alert
+   if 5 restarts with 5 cycles then timeout
+   group system
+   group hwrandom
+

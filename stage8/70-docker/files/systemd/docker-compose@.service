@@ -1,6 +1,7 @@
 [Unit]
 Description=Docker compose %I service
 Requires=network-online.target docker.service
+Wants=network-online.target docker.service
 After=network-online.target docker.service
 PartOf=docker-compose.target
 

@@ -1,0 +1,19 @@
+[Unit]
+Description=Hardware RNG Entropy Gatherer Daemon
+ConditionFileIsExecutable=/usr/sbin/rngd
+
+[Service]
+Type=simple
+Environment=RNGDOPTIONS=
+Environment=HRNGDEVICE=/dev/hwrng
+Environment=ENABLED=1
+EnvironmentFile=-/etc/default/rng-tools
+ExecStartPre=/bin/sh -c "test x$ENABLED = x1 || exit 1"
+ExecStart=/usr/sbin/rngd -r $HRNGDEVICE $RNGDOPTIONS
+ExecStartPost=/bin/sh -c 'sleep 3 && pgrep -x rngd > /run/rngd.pid'
+ExecStopPost=/bin/rm -f /run/rngd.pid
+KillMode=process
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

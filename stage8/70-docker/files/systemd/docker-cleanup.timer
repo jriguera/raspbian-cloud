@@ -6,7 +6,7 @@ ConditionFileIsExecutable=/usr/bin/docker
 
 [Timer]
 OnCalendar=*-*-* 12:00:00
-OnBootSec=10min
+OnBootSec=30min
 
 [Install]
 WantedBy=timers.target

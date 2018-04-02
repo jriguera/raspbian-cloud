@@ -19,5 +19,5 @@ install -m 644 -g root -o root files/default ${ROOTFS_DIR}/etc/default/node_expo
 install -m 644 -g root -o root files/systemd/node_exporter.service ${ROOTFS_DIR}/etc/systemd/system
 
 on_chroot <<EOF
-systemctl enable node_exporter.service
+systemctl enable node_exporter
 EOF
