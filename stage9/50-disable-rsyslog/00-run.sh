@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-#on_chroot << EOF
-#systemctl disable rsyslog
-#EOF
+on_chroot << EOF
+systemctl disable rsyslog
+EOF
 
