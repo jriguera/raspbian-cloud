@@ -8,7 +8,6 @@
     "max-size": "10m",
     "max-file": "2"
   },
-  "debug": false,
-  "userns-remap": "1000:1000"
+  "debug": false
 }
 

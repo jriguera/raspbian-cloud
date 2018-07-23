@@ -1,0 +1,226 @@
+#cloud-config
+# vim: syntax=yaml
+#
+
+## timezone: set the timezone for this instance
+# the value of 'timezone' must exist in /usr/share/zoneinfo
+#
+timezone: Europe/Amsterdam
+
+## hostname and /etc/hosts management
+# cloud-init can handle updating some entries in /etc/hosts,
+# and can set your hostname for you.
+#
+# if you do nothing you'll end up with:
+#  * /etc/hostname (and `hostname`) managed via: 'preserve_hostame: false'
+#    if you do not change /etc/hostname, it will be updated with the cloud
+#    provided hostname on each boot.  If you make a change, then manual
+#    maintenance takes over, and cloud-init will not modify it.
+#
+#  * /etc/hosts managed via: 'manage_etc_hosts: false'
+#    cloud-init will not manage /etc/hosts at all.  It is in full manual
+#    maintenance mode.
+#
+# You can change the above behavior with the following config variables:
+#  Remember that these can be set in cloud-config via user-data,
+#  /etc/cloud/cloud.cfg or any file in /etc/cloud/cloud.cfg.d/
+#
+# == Hostname management (via /etc/hostname) ==
+#  * preserve_hostname:
+#      default: False
+#      If this option is set to True, then /etc/hostname will never updated
+#      The default behavior is to update it if it has not been modified by
+#      the user.
+#
+#  * hostname:
+#      this option will be used wherever the 'hostname' is needed
+#      simply substitute it in the description above.
+#      ** If you wish to set your hostname, set it here **
+#      default: 'hostname' as returned by the metadata service
+#               on EC2, the hostname portion of 'local-hostname' is used
+#               which is something like 'ip-10-244-170-199'
+#
+#  * fqdn:
+#      this option will be used wherever 'fqdn' is needed.
+#      simply substitue it in the description above.
+#      default: fqdn as returned by the metadata service.  on EC2 'hostname'
+#               is used, so this is like: ip-10-244-170-199.ec2.internal
+#
+hostname: raspi
+fqdn: raspi.lar
+
+## /etc/hosts management
+#
+# The cloud-config variable that covers management of /etc/hosts is 
+# 'manage_etc_hosts'
+#
+# By default, its value is 'false' (boolean False)
+#
+#  * manage_etc_hosts:
+#      default: false
+#
+#    false:
+#      cloud-init will not modify /etc/hosts at all.  
+#      * Whatever is present at instance boot time will be present after boot.
+#      * User changes will not be overwritten
+#
+#    true or 'template':
+#      on every boot, /etc/hosts will be re-written from 
+#      /etc/cloud/templates/hosts.tmpl.
+#      The strings '$hostname' and '$fqdn' are replaced in the template
+#      with the appropriate values.
+#      To make modifications persistant across a reboot, you must make 
+#      modificatoins to /etc/cloud/templates/hosts.tmpl
+#
+#    localhost:
+#      This option ensures that an entry is present for fqdn as described in
+#      section 5.1.2 of the debian manual 
+#      http://www.debian.org/doc/manuals/debian-reference/ch05.en.html
+#
+#      cloud-init will generally own the 127.0.1.1 entry, and will update 
+#      it to the hostname and fqdn on every boot.  All other entries will
+#      be left as is.  'ping `hostname`' will ping 127.0.1.1
+#
+#      If you want a fqdn entry with aliases other than 'hostname' to resolve
+#      to a localhost interface, you'll need to use something other than 
+#      127.0.1.1.  For example:
+#        127.0.1.2 myhost.fqdn.example.com myhost whatup.example.com
+#
+manage_etc_hosts: true
+
+## This module is intended to manage resolv.conf in environments where early 
+# configuration of resolv.conf is necessary for further bootstrapping and/or
+# where configuration management such as puppet or chef own dns configuration.
+# As Debian/Ubuntu will, by default, utilize resovlconf, and similarly RedHat
+# will use sysconfig, this module is likely to be of little use unless those
+# are configured correctly.
+#
+manage_resolv_conf: true
+resolv_conf:
+  nameservers: ['127.0.0.1']
+  searchdomains:
+    - lar
+  domain: lar
+
+## resize_rootfs should the / filesytem be resized on first boot
+# this allows you to launch an instance with a larger disk / partition
+# and have the instance automatically grow / to accomoddate it
+# set to 'False' to disable
+# by default, the resizefs is done early in boot, and blocks
+# if resize_rootfs is set to 'noblock', then it will be run in parallel
+#
+resize_rootfs: true
+
+## Update apt database on first boot
+# (ie run apt-get update)
+#
+package_update: false
+
+## Upgrade the instance on first boot
+# (ie run apt-get upgrade)
+#
+package_upgrade: false
+
+
+## Config files
+#
+write_files:
+- path: "/etc/dnsmasq.d/local-domain.conf"
+  owner: root:root
+  permissions: '0644'
+  content: |
+    # Add local-only domains here, queries in these domains are answered
+    # from /etc/hosts or DHCP only.
+    local=/lar/
+    domain=lar
+
+- path: "/etc/mailname"
+  owner: root:root
+  permissions: '0644'
+  content: "raspi.lar"
+
+- path: "/etc/mail/smtpd.conf.local"
+  owner: root:opensmtpd
+  permissions: '0644'
+  content: |
+    table secrets file:/etc/mail/secrets
+    accept for any relay via tls+auth://gmail@mail.google.com:587 auth <secrets>
+
+- path: "/etc/mail/secrets"
+  owner: root:opensmtpd
+  permissions: '0640'
+  content: "gmail xxxxxxxxxxxxx"
+
+- path: "/etc/mail/users"
+  owner: root:root
+  permissions: '0644'
+  content: |
+    root: root@gmail.com
+    pi: pi@gmail.com
+
+- path: "/etc/aliases"
+  owner: root:root
+  permissions: '0644'
+  content: |
+    # Enter mail aliases below in the format described by aliases(5)
+    # RFC 2142 NETWORK OPERATIONS MAILBOX NAMES
+    abuse:		root
+    noc:		root
+    security:		root
+    # RFC 2142 SUPPORT MAILBOX NAMES FOR SPECIFIC INTERNET SERVICES
+    postmaster:		root
+    hostmaster:		root
+    monit:              root
+    root:               pi
+    pi:			pi@gmail.com
+
+- path: "/etc/monit/conf.d/monit-httpd"
+  owner: root:root
+  permissions: '0640'
+  content: |
+    set httpd port 2812
+        allow admin:admin
+
+
+## manual cache clean.
+#  By default, the link from /var/lib/cloud/instance to
+#  the specific instance in /var/lib/cloud/instances/ is removed on every
+#  boot.  The cloud-init code then searches for a DataSource on every boot
+#  if your DataSource will not be present on every boot, then you can set
+#  this option to 'True', and maintain (remove) that link before the image
+#  will be booted as a new instance.
+# default is False
+manual_cache_clean: False
+
+## When cloud-init is finished running including having run 
+# cloud_init_modules, then it will run this command.  The default
+# is to emit an upstart signal as shown below.  If the value is a
+# list, it will be passed to Popen.  If it is a string, it will be
+# invoked through 'sh -c'.
+# 
+# default value:
+# cc_ready_cmd: [ initctl, emit, cloud-config, CLOUD_CFG=/var/lib/instance//cloud-config.txt ]
+# example:
+# cc_ready_cmd: [ sh, -c, 'echo HI MOM > /tmp/file' ]
+
+## final_message
+# default: cloud-init boot finished at $TIMESTAMP. Up $UPTIME seconds
+# this message is written by cloud-final when the system is finished
+# its first boot.
+# This message is rendered as if it were a template.  If you
+# want jinja, you have to start the line with '## template:jinja\n'
+final_message: "The system is finally up, after $UPTIME seconds"
+
+## phone_home: if this dictionary is present, then the phone_home
+# cloud-config module will post specified data back to the given
+# url
+# default: none
+# phone_home:
+#  url: http://my.foo.bar/$INSTANCE/
+#  post: all
+#  tries: 10
+#
+#phone_home:
+# url: http://my.example.com/$INSTANCE_ID/
+# post: [ pub_key_dsa, pub_key_rsa, pub_key_ecdsa, instance_id ]
+

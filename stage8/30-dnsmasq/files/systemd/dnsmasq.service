@@ -11,10 +11,11 @@ Type=dbus
 BusName=uk.org.thekelleys.dnsmasq
 Environment=DNSMASQ_OPTS=
 Environment=ENABLED=1
+Environment=CONFIG_DIR=/etc/dnsmasq.d,*.conf
 EnvironmentFile=-/etc/default/dnsmasq
 ExecStartPre=/bin/sh -c "test x$ENABLED = x1 || exit 1"
-ExecStartPre=/usr/sbin/dnsmasq --conf-file=/etc/dnsmasq.conf --test --conf-dir="${CONFIG_DIR}" $DNSMASQ_OPTS --test
-ExecStart=/usr/sbin/dnsmasq --conf-file=/etc/dnsmasq.conf --conf-dir="${CONFIG_DIR}" $DNSMASQ_OPTS --keep-in-foreground --enable-dbus --user=dnsmasq --pid-file=/var/run/dnsmasq.pid
+ExecStartPre=/usr/sbin/dnsmasq --test --conf-dir="${CONFIG_DIR}" $DNSMASQ_OPTS --test
+ExecStart=/usr/sbin/dnsmasq --conf-dir="${CONFIG_DIR}" $DNSMASQ_OPTS -k -1 -x /var/run/dnsmasq.pid
 ExecReload=/bin/kill -HUP $MAINPID
 KillMode=process
 Restart=on-failure

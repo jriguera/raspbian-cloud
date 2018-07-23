@@ -24,10 +24,13 @@ systemctl enable docker-cleanup.service
 EOF
 
 
-# Install docker-compose
+## Install docker-compose
 on_chroot <<EOF
 pip3 install docker-compose
+# or (old version)
+# apt-get install -y docker-compose
 EOF
+
 # docker-compose services
 install -m 644 -g root -o root files/systemd/docker-compose.target ${ROOTFS_DIR}/etc/systemd/system
 install -m 644 -g root -o root files/systemd/docker-compose@.service ${ROOTFS_DIR}/etc/systemd/system
@@ -37,6 +40,7 @@ install -m 644 -g root -o root files/systemd/docker-compose-refresh.timer ${ROOT
 # /boot folder services
 install -m 644 -g root -o root files/systemd/docker-compose@.service ${ROOTFS_DIR}/etc/systemd/system/docker-compose@boot-docker-compose.service
 install -m 644 -g root -o root files/systemd/docker-compose-refresh@.service ${ROOTFS_DIR}/etc/systemd/system/docker-compose-refresh@boot-docker-compose.service
+
 # Install docker dompose services
 on_chroot <<EOF
 mkdir -p /boot/docker/compose
@@ -45,3 +49,6 @@ systemctl enable docker-compose.target
 systemctl enable docker-compose@boot-docker-compose.service
 EOF
 
+# Copy default configuration
+mkdir -p ${ROOTFS_DIR}/boot/docker/compose
+install -m 644 -g root -o root files/boot/docker-compose.yml ${ROOTFS_DIR}/boot/docker/compose/

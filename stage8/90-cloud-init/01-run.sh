@@ -4,6 +4,12 @@ install -m 644 -g root -o root files/cloud.cfg ${ROOTFS_DIR}/etc/cloud/
 install -m 644 -g root -o root files/cloud.cfg.d/* ${ROOTFS_DIR}/etc/cloud/cloud.cfg.d/
 install -m 644 -g root -o root files/templates/sources.list.debian.tmpl ${ROOTFS_DIR}/etc/cloud/templates/
 
+install -m 644 -g root -o root files/boot/user-data ${ROOTFS_DIR}/boot/
+install -m 644 -g root -o root files/boot/meta-data ${ROOTFS_DIR}/boot/
+
+install -m 755 -g root -o root files/scripts/vendor/00-resize-root-fs.sh ${ROOTFS_DIR}/var/lib/cloud/scripts/vendor
+
+
 # Redirect logs to tty in systemd
 #systemd_tty() {
 #    local tty=$1
