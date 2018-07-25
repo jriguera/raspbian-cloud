@@ -7,7 +7,8 @@ install -m 644 -g root -o root files/templates/sources.list.debian.tmpl ${ROOTFS
 install -m 644 -g root -o root files/boot/user-data ${ROOTFS_DIR}/boot/
 install -m 644 -g root -o root files/boot/meta-data ${ROOTFS_DIR}/boot/
 
-install -m 755 -g root -o root files/scripts/vendor/00-resize-root-fs.sh ${ROOTFS_DIR}/var/lib/cloud/scripts/vendor
+mkdir -p ${ROOTFS_DIR}/var/lib/cloud/scripts/per-once
+install -m 755 -g root -o root files/scripts/vendor/00-resize-root-fs.sh ${ROOTFS_DIR}/var/lib/cloud/scripts/per-once
 
 
 # Redirect logs to tty in systemd
