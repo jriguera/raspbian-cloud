@@ -1,0 +1,16 @@
+check process hostapd with pidfile /run/hostapd.wlan0.pid
+  start program = "/usr/sbin/service hostapd start" with timeout 60 seconds
+  stop program = "/usr/sbin/service hostapd stop"
+  if 3 restarts within 5 cycles then timeout
+  depends on hostapd_bin
+  group system
+  group hostapd
+
+check file hostapd_bin with path /usr/sbin/hostapd
+  # if failed checksum then unmonitor
+  if failed permission 755 then unmonitor
+  if failed uid root then unmonitor
+  if failed gid root then unmonitor
+  group system
+  group hostapd
+
