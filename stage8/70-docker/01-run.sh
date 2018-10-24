@@ -1,5 +1,12 @@
 #!/bin/bash -e
 
+COMPOSE_CONFIG_FOLDER=/boot/docker-compose
+
+# remove trailing slash
+COMPOSE_CONFIG_FOLDER=${COMPOSE_CONFIG_FOLDER%%+(/)}
+# start slash
+COMPOSE_CONFIG_FOLDER=${COMPOSE_CONFIG_FOLDER##+(/)}
+
 # Install and enable docker
 on_chroot <<EOF
 curl -sSL https://get.docker.com/ | sh
@@ -37,18 +44,19 @@ install -m 644 -g root -o root files/systemd/docker-compose@.service ${ROOTFS_DI
 install -m 644 -g root -o root files/systemd/docker-compose-refresh@.service ${ROOTFS_DIR}/etc/systemd/system
 install -m 644 -g root -o root files/systemd/docker-compose-refresh.service ${ROOTFS_DIR}/etc/systemd/system
 install -m 644 -g root -o root files/systemd/docker-compose-refresh.timer ${ROOTFS_DIR}/etc/systemd/system
-# /boot folder services
-install -m 644 -g root -o root files/systemd/docker-compose@.service ${ROOTFS_DIR}/etc/systemd/system/docker-compose@boot-docker-compose.service
-install -m 644 -g root -o root files/systemd/docker-compose-refresh@.service ${ROOTFS_DIR}/etc/systemd/system/docker-compose-refresh@boot-docker-compose.service
 
 # Install docker dompose services
 on_chroot <<EOF
-mkdir -p /boot/docker/compose
+CONFIGDIR=$(systemd-escape --path ${COMPOSE_CONFIG_FOLDER})
+ln -sfr /etc/systemd/system/docker-compose@.service /etc/systemd/system/docker-compose@${CONFIGDIR}.service
+ln -sfr /etc/systemd/system/docker-compose-refresh@.service /etc/systemd/system/docker-compose-refresh@${CONFIGDIR}.service
+mkdir -p /${COMPOSE_CONFIG_FOLDER}
 systemctl enable docker-compose.target
 # Enable docker-compose boot service
 systemctl enable docker-compose@boot-docker-compose.service
 EOF
 
 # Copy default configuration
-mkdir -p ${ROOTFS_DIR}/boot/docker/compose
-install -m 644 -g root -o root files/boot/docker-compose.yml ${ROOTFS_DIR}/boot/docker/compose/
+mkdir -p ${ROOTFS_DIR}/${COMPOSE_CONFIG_FOLDER}
+install -m 644 -g root -o root files/boot/docker-compose.yml ${ROOTFS_DIR}/${COMPOSE_CONFIG_FOLDER}
+
