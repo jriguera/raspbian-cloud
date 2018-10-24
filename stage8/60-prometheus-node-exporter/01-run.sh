@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-VERSION="0.15.2"
+VERSION="0.16.0"
 ARCH="armv6"
 
 # Install and enable Prometheus node_exporter
