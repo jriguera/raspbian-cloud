@@ -1,10 +1,8 @@
 [Unit]
 Description=Copy provided configuration files in %I to /etc
 DefaultDependencies=no
-Wants=network-pre.target
 After=systemd-remount-fs.service
-Befone=cloud-init-local.service
-Before=network-pre.target
+Before=cloud-init-local.service
 Before=shutdown.target
 Before=sysinit.target
 Conflicts=shutdown.target
@@ -18,6 +16,7 @@ RemainAfterExit=yes
 StandardOutput=journal
 User=root
 Group=root
-ExecStartPre=/usr/local/bin/cp-files-permissions.sh %I /etc
+ExecStart=/usr/local/bin/cp-files-permissions.sh %I /etc
 
 [Install]
+WantedBy=cloud-init.target
