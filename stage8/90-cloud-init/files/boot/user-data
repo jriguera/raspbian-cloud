@@ -122,66 +122,6 @@ package_update: false
 package_upgrade: false
 
 
-## Config files
-#
-write_files:
-- path: "/etc/dnsmasq.d/local-domain.conf"
-  owner: root:root
-  permissions: '0644'
-  content: |
-    # Add local-only domains here, queries in these domains are answered
-    # from /etc/hosts or DHCP only.
-    local=/lar/
-    domain=lar
-
-- path: "/etc/mailname"
-  owner: root:root
-  permissions: '0644'
-  content: "raspi.lar"
-
-- path: "/etc/mail/smtpd.conf.local"
-  owner: root:opensmtpd
-  permissions: '0644'
-  content: |
-    table secrets file:/etc/mail/secrets
-    accept for any relay via tls+auth://gmail@mail.google.com:587 auth <secrets>
-
-- path: "/etc/mail/secrets"
-  owner: root:opensmtpd
-  permissions: '0640'
-  content: "gmail xxxxxxxxxxxxx"
-
-- path: "/etc/mail/users"
-  owner: root:root
-  permissions: '0644'
-  content: |
-    root: root@gmail.com
-    pi: pi@gmail.com
-
-- path: "/etc/aliases"
-  owner: root:root
-  permissions: '0644'
-  content: |
-    # Enter mail aliases below in the format described by aliases(5)
-    # RFC 2142 NETWORK OPERATIONS MAILBOX NAMES
-    abuse:		root
-    noc:		root
-    security:		root
-    # RFC 2142 SUPPORT MAILBOX NAMES FOR SPECIFIC INTERNET SERVICES
-    postmaster:		root
-    hostmaster:		root
-    monit:              root
-    root:               pi
-    pi:			pi@gmail.com
-
-- path: "/etc/monit/conf.d/monit-httpd"
-  owner: root:root
-  permissions: '0640'
-  content: |
-    set httpd port 2812
-        allow admin:admin
-
-
 ## manual cache clean.
 #  By default, the link from /var/lib/cloud/instance to
 #  the specific instance in /var/lib/cloud/instances/ is removed on every
