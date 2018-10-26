@@ -16,7 +16,7 @@ EOF
 install -m 644 -g root -o root files/default ${ROOTFS_DIR}/etc/default/node_exporter
 
 # Systemd service
-install -m 644 -g root -o root files/systemd/node_exporter.service ${ROOTFS_DIR}/etc/systemd/system
+install -m 644 -g root -o root files/systemd/node_exporter.service ${ROOTFS_DIR}/lib/systemd/system
 
 on_chroot <<EOF
 systemctl enable node_exporter

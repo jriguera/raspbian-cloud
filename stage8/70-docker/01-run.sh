@@ -24,8 +24,8 @@ EOF
 
 
 # Docker cleanup
-install -m 644 -g root -o root files/systemd/docker-cleanup.timer ${ROOTFS_DIR}/etc/systemd/system
-install -m 644 -g root -o root files/systemd/docker-cleanup.service ${ROOTFS_DIR}/etc/systemd/system
+install -m 644 -g root -o root files/systemd/docker-cleanup.timer ${ROOTFS_DIR}/lib/systemd/system
+install -m 644 -g root -o root files/systemd/docker-cleanup.service ${ROOTFS_DIR}/lib/systemd/system
 on_chroot <<EOF
 systemctl enable docker-cleanup.service
 EOF
@@ -39,21 +39,19 @@ pip3 install docker-compose
 EOF
 
 # docker-compose services
-install -m 644 -g root -o root files/systemd/docker-compose.target ${ROOTFS_DIR}/etc/systemd/system
-install -m 644 -g root -o root files/systemd/docker-compose@.service ${ROOTFS_DIR}/etc/systemd/system
-install -m 644 -g root -o root files/systemd/docker-compose-refresh@.service ${ROOTFS_DIR}/etc/systemd/system
-install -m 644 -g root -o root files/systemd/docker-compose-refresh.service ${ROOTFS_DIR}/etc/systemd/system
-install -m 644 -g root -o root files/systemd/docker-compose-refresh.timer ${ROOTFS_DIR}/etc/systemd/system
+install -m 644 -g root -o root files/systemd/docker-compose.target ${ROOTFS_DIR}/lib/systemd/system
+install -m 644 -g root -o root files/systemd/docker-compose@.service ${ROOTFS_DIR}/lib/systemd/system
+install -m 644 -g root -o root files/systemd/docker-compose-refresh@.service ${ROOTFS_DIR}/lib/systemd/system
+install -m 644 -g root -o root files/systemd/docker-compose-refresh.service ${ROOTFS_DIR}/lib/systemd/system
+install -m 644 -g root -o root files/systemd/docker-compose-refresh.timer ${ROOTFS_DIR}/lib/systemd/system
 
 # Install docker dompose services
 on_chroot <<EOF
-CONFIGDIR=$(systemd-escape --path ${COMPOSE_CONFIG_FOLDER})
-ln -sfr /etc/systemd/system/docker-compose@.service /etc/systemd/system/docker-compose@${CONFIGDIR}.service
-ln -sfr /etc/systemd/system/docker-compose-refresh@.service /etc/systemd/system/docker-compose-refresh@${CONFIGDIR}.service
-mkdir -p /${COMPOSE_CONFIG_FOLDER}
 systemctl enable docker-compose.target
 # Enable docker-compose boot service
-systemctl enable docker-compose@boot-docker-compose.service
+systemctl enable docker-compose@`systemd-escape --path ${COMPOSE_CONFIG_FOLDER}`.service
+systemctl enable docker-compose-refresh@`systemd-escape --path ${COMPOSE_CONFIG_FOLDER}`.service
+mkdir -p /${COMPOSE_CONFIG_FOLDER}
 EOF
 
 # Copy default configuration
