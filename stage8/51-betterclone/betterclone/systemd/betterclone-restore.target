@@ -1,0 +1,13 @@
+[Unit]
+Description=Betterclone Restore target services
+StopWhenUnneeded=true
+Wants=network-online.target
+After=network.target network-online.target
+Before=docker.service docker-compose.target
+Conflicts=shutdown.target
+ConditionFileIsExecutable=/bin/betterclone
+ConditionPathExists=/etc/betterclone/config.env
+
+[Install]
+WantedBy=multi-user.target
+

@@ -1,0 +1,180 @@
+#!/usr/bin/python3
+#
+# Copyright (C) 2016 Hans van Kranenburg <hans@knorrie.org>
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public
+# License v2 as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public
+# License along with this program; if not, write to the
+# Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301 USA
+
+import argparse
+import btrfs
+import os
+import sys
+
+STATE_OK = 0
+STATE_WARNING = 1
+STATE_CRITICAL = 2
+STATE_UNKNOWN = 3
+
+state_str_map = {
+    STATE_OK: 'OK',
+    STATE_WARNING: 'WARNING',
+    STATE_CRITICAL: 'CRITICAL',
+    STATE_UNKNOWN: 'UNKNOWN',
+}
+
+
+def get_args():
+    parser = argparse.ArgumentParser("Check BTRFS filesystem usage")
+    parser.add_argument('-awg', '--allocated-warning-gib', type=int, default=0,
+                        help="Exit with WARNING status if less than the specified amount of "
+                        "disk space (in GiB) is unallocated")
+    parser.add_argument('-acg', '--allocated-critical-gib', type=int, default=0,
+                        help="Exit with CRITICAL status if less than the specified amount of "
+                        "disk space (in GiB) is unallocated")
+    parser.add_argument('-awp', '--allocated-warning-percent', type=int, default=100,
+                        help="Exit with WARNING status if more than the specified percent of "
+                        "disk space is allocated")
+    parser.add_argument('-acp', '--allocated-critical-percent', type=int, default=100,
+                        help="Exit with CRITICAL status if more than the specified percent of "
+                        "disk space is allocated")
+    parser.add_argument('-m', '--mountpoint', required=True,
+                        help="Path to the BTRFS mountpoint")
+    args = parser.parse_args()
+
+    if not os.path.exists(args.mountpoint):
+        print("BTRFS mountpoint does not exist: {}".format(args.mountpoint))
+        return STATE_CRITICAL, args
+
+    if not os.access(args.mountpoint, os.R_OK):
+        print("Mountpoint is not accessible: {}".format(args.mountpoint))
+        return STATE_CRITICAL, args
+
+    if args.allocated_warning_gib < 0:
+        print("Allocated GiB warning threshold must be a positive integer value: {}".format(
+            args.allocated_warning_gib))
+        return STATE_CRITICAL, args
+    if args.allocated_critical_gib < 0:
+        print("Allocated GiB critical threshold must be a positive integer value: {}".format(
+            args.allocated_critical_gib))
+        return STATE_CRITICAL, args
+
+    if args.allocated_warning_percent < 0 or args.allocated_warning_percent > 100:
+        print("Allocated warning percentage must be between 0 and 100: {}".format(
+            args.allocated_warning_percent))
+        return STATE_CRITICAL, args
+    if args.allocated_critical_percent < 0 or args.allocated_critical_percent > 100:
+        print("Allocated critical percentage must be between 0 and 100: {}".format(
+            args.allocated_critical_percent))
+        return STATE_CRITICAL, args
+
+    return STATE_OK, args
+
+
+def check_usage(args, fs):
+    warning = False
+    critical = False
+    msg = []
+
+    GiB = 1073741824
+    bups = btrfs.utils.pretty_size
+
+    dev_total, allocated, used, wasted_hard, wasted_soft = btrfs.utils.fs_usage(fs)
+    total = dev_total - wasted_hard - wasted_soft
+    wasted = wasted_hard + wasted_soft
+    unallocated = total - allocated
+    unused = total - used
+
+    if unallocated < args.allocated_critical_gib * GiB:
+        msg.append("Critical: Unallocated left: {} (Unused left: {})".format(
+            bups(unallocated), bups(unused)))
+        critical = True
+    elif unallocated < args.allocated_warning_gib * GiB:
+        msg.append("Warning: Unallocated left: {} (Unused left: {})".format(
+            bups(unallocated), bups(unused)))
+        warning = True
+
+    allocated_pct = int(round((allocated * 100) / total))
+    used_pct = int(round((used * 100) / total))
+
+    if allocated_pct >= args.allocated_critical_percent:
+        msg.append("Critical: Allocated: {}% (Used: {}%)".format(allocated_pct, used_pct))
+        critical = True
+    elif allocated_pct >= args.allocated_warning_percent:
+        msg.append("Warning: Allocated: {}% (Used: {}%)".format(allocated_pct, used_pct))
+        warning = True
+
+    summary = []
+    summary.append("Total size: {}".format(bups(dev_total)))
+    summary.append("Allocated: {} ({}%)".format(bups(allocated), allocated_pct))
+    if wasted > 0:
+        summary.append("Wasted: {} (Reclaimable: {})".format(bups(wasted), bups(wasted_soft)))
+    summary.append("Used: {} ({}%)".format(bups(used), used_pct))
+
+    if critical:
+        return STATE_CRITICAL, msg, summary
+    if warning:
+        return STATE_WARNING, msg, summary
+    return STATE_OK, msg, summary
+
+
+def check_dev_stats(fs):
+    state = STATE_OK
+    msg = []
+    summary = []
+    devices = list(fs.devices())
+    for device in devices:
+        stats = fs.dev_stats(device.devid)
+        device_msg = ["{}: {}".format(counter, value)
+                      for counter, value in stats.counters.items()
+                      if value != 0]
+        if len(device_msg) > 0:
+            msg.append("device {}: {}".format(device.devid, ", ".join(device_msg)))
+            state = STATE_CRITICAL
+    summary.append("{} device(s)".format(len(devices)))
+    if state != STATE_OK:
+        return state, msg, summary
+    return state, msg, summary
+
+
+def main():
+    args_state, args = get_args()
+    if args_state != STATE_OK:
+        return args_state
+
+    fs = btrfs.FileSystem(args.mountpoint)
+    state = STATE_OK
+    msg = []
+    summary = []
+
+    usage_state, usage_msg, usage_summary = check_usage(args, fs)
+    state = max(state, usage_state)
+    msg.extend(usage_msg)
+    summary.extend(usage_summary)
+
+    dev_stats_state, dev_stats_msg, dev_stats_summary = check_dev_stats(fs)
+    state = max(state, dev_stats_state)
+    msg.extend(dev_stats_msg)
+    summary.extend(dev_stats_summary)
+
+    if len(msg) > 0:
+        print("BTRFS {}: ".format(state_str_map[state]), end='')
+        print(", ".join(msg))
+    else:
+        print("BTRFS OK")
+    print(", ".join(summary))
+    return state
+
+
+if __name__ == "__main__":
+    sys.exit(main())

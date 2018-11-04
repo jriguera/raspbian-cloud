@@ -1,0 +1,351 @@
+#!/usr/bin/env bash
+set -o pipefail  # exit if pipe command fails
+[ -z "$DEBUG" ] || set -x
+
+PROGRAM=${PROGRAM:-$(basename "${BASH_SOURCE[0]}")}
+MOUNT_OPTS=${MOUNT_OPTS:-"defaults,noatime,nodiratime"}
+
+
+usage() {
+    cat <<EOF
+Usage:
+    $PROGRAM [-h] [--noauto] [--force] [--subvol name[:/mount/point] [...]] <label> <mountpoint> <device>
+
+This program manages Btrfs filesystem RAID 1 by adding the device and forcing
+rebalancing the data. If there is no Btrfs filesystem with <fs-label>, it will
+create a single filesystem with mkfs and add the new entry to fstab.
+If there is a Btrfs filesystem with the specified label, it will mount the
+mountpoint (degraded mode) add the new device to the FS, force a rebalancing
+of the data and removing missing devices.
+
+Options:
+    -h        Show usage
+    --noauto  Adds entries in /etc/fstab with 'noauto'
+    --force   Force mkfs to overwrite the current filesystem in the device
+    --subvol  name[:/mountpoint]
+              Adds a subvolume to the Btrfs. This option can be specified multiple
+              times. The mountpoint is separated by the label with ':' and
+              it is optional. If not specified, the entry will not be added
+              to fstab.
+
+Environment variables:
+
+  MOUNT_OPTS: fstab mount options (Default: ${MOUNT_OPTS})
+
+(c) Jose Riguera, 2019 <jriguera@gmail.com>
+EOF
+}
+
+
+create_btrfs_mountpoint_fstab() {
+    local label="${1}"
+    local mountpoint="${2}"
+    local noauto="${3}"
+    local subvol="${4}"
+
+    local opts="${MOUNT_OPTS}"
+    [ "${noauto}" -eq "1" ] && opts="${opts},noauto"
+
+    if ! [ -w "/etc/fstab" ]
+    then
+        echo "* Cannot write in /etc/fstab!"
+        return 1
+    else
+        echo "* Adding ${mountpoint} to /etc/fstab ..."
+    fi
+    mkdir -p "${mountpoint}"
+    if [ -z "${subvol}" ]
+    then
+        echo "# Btrfs ${label}" >>/etc/fstab
+        echo "LABEL=${label}    ${mountpoint}    btrfs    ${opts}  0 0" >>/etc/fstab
+    else
+        echo "# Btrfs ${label}/${subvol}" >>/etc/fstab
+        echo "LABEL=${label}    ${mountpoint}    btrfs    ${opts},subvol=/${subvol}  0 0" >>/etc/fstab
+    fi
+    return 0
+}
+
+
+create_btrfs_subvolume() {
+    local root="${1}"
+    local label="${2}"
+    local name="${3}"
+    local noauto="${4}"
+    local mountpoint="${5}"
+
+    echo "* Creating subvolume ${name} ..."
+    (
+        set -ex
+        btrfs subvolume create "${root}/${name}"
+    ) &
+    wait $!
+    rvalue=$?
+    if [ "${rvalue}" -eq "0" ] && [ -n "${mountpoint}" ]
+    then
+        create_btrfs_mountpoint_fstab "${label}" "${mountpoint}" "${noauto}" "${name}"
+        rvalue=$?
+    fi
+    sync
+    return ${rvalue}
+}
+
+
+create_btrfs_subvolumes() {
+    local root="${1}"
+    local label="${2}"
+    local noauto="${3}"
+    shift 3
+    local subvolumes=("${@}")
+
+    local v
+    local rvalue=0
+    local mounted=0
+    local mountpoint=()
+    local counter=0
+    echo "* Creating new Btrfs subvolumes in '${root}' ..."
+    if ! findmnt -k -M "${root}" >/dev/null 2>&1
+    then
+        mounted=1
+        if ! mount "${root}"
+        then
+            echo "* Could not mount ${root}!"
+            return 1
+        fi
+    fi
+    # format is name:mountpoint
+    # mountpoint is optional!
+    for v in "${subvolumes[@]}"
+    do
+        mountpoint=(${v//:/ })
+        create_btrfs_subvolume "${root}" "${label}" "${mountpoint[0]}" "${noauto}" "${mountpoint[1]}" || rvalue=1
+        counter=$((counter+1))
+    done
+    [ "${mounted}" -eq "1" ] && umount "${root}"
+    echo "* ${counter} subvolumes created."
+    return ${rvalue}
+}
+
+
+umount_btrfs() {
+    local mountpoint="${1}"
+    local mounted="${2}"
+
+    local rvalue
+
+    if [ "${mounted}" -eq "1" ]
+    then
+        echo "* Re-mounting Btrfs mountpoint '${mountpoint}' in normal mode ..."
+        mount -o remount "${mountpoint}"
+        rvalue=$?
+    else
+        echo "* Umounting Btrfs mountpoint '${mountpoint}' ..."
+        umount "${mountpoint}"
+        rvalue=$?
+    fi
+    return ${rvalue}
+}
+
+
+mount_btrfs() {
+    local mountpoint="${1}"
+
+    local rvalue
+    if findmnt -k -M ${mountpoint} >/dev/null 2>&1
+    then
+        echo "* Re-mounting Btrfs mountpoint '${mountpoint}' in degraded mode ..."
+        mount -o remount,degraded "${mountpoint}"
+        rvalue=$?
+    else
+        echo "* Mounting Btrfs mountpoint '${mountpoint}' in degraded mode ..."
+        mount -o defaults,degraded "${mountpoint}"
+        rvalue=$?
+    fi
+    return ${rvalue}
+}
+
+
+mkfs_btrfs() {
+    local label="${1}"
+    local device="${2}"
+    local mountpoint="${3}"
+    local noauto="${4}"
+    local force="${5:-0}"
+
+    local currentlabel
+    local currentdevice
+    local mounted=0
+    local rvalue=0
+    local cmd
+    local devicezero
+
+    currentlabel=$(btrfs filesystem show "${label}" 2>/dev/null | awk '/Label:/{ gsub(/\047/, "", $2); print $2; }')
+    if [ "${currentlabel}" != "${label}" ]
+    then
+        cmd="mkfs -t btrfs -L ${label} ${device}"
+        [ "${force}" -eq "1" ] && cmd="mkfs -t btrfs -f -L ${label} ${device}"
+        echo "* Creating new Btrfs filesystem ..."
+        (
+            set -ex
+            ${cmd}
+        ) &
+        wait $! && create_btrfs_mountpoint_fstab "${label}" "${mountpoint}" "${noauto}"
+        return $?
+    else
+        currentdevice=$(btrfs filesystem show "${label}" 2>/dev/null | awk -v dev="${device}" '/devid/{ if (dev == $NF) print $NF }')
+        if [ "${currentdevice}" != "${device}" ]
+        then
+            findmnt -k -M "${mountpoint}" >/dev/null 2>&1 && mounted=1
+            if mount_btrfs "${mountpoint}"
+            then
+                echo "* Adding new device to the Btrfs raid 1 ${mountpoint} ..."
+                (
+                    set -ex
+                    {
+                        btrfs device add "${device}" "${mountpoint}"
+                        btrfs balance start --full-balance -v -f -sconvert=raid1 -dconvert=raid1 -mconvert=raid1 "${mountpoint}"
+                        btrfs device usage "${mountpoint}"
+                    }
+                ) &
+                wait $!
+                rvalue=$?
+                # Delete (old) device
+                if [ "${rvalue}" -eq "0" ]
+                then
+                    # Get ID of device with Device size: 0
+                    devicezero=$(btrfs device usage "${mountpoint}" -b 2>/dev/null | awk '/^\/dev/{
+                      id=$3;
+                      FS=":";
+                      while (getline) {
+                        gsub(/[ \t]+/,"", $1);
+                        if (tolower($1) == "devicesize") {
+                          FS=" ";
+                          if (int($2) == 0) print id;
+                          break;
+                        }
+                      }
+                    }')
+                    if [ -n "${devicezero}" ]
+                    then
+                        echo "* Deleting old device with id ${devicezero} ..."
+                        (
+                            set -ex
+                            btrfs device delete ${devicezero} "${mountpoint}"
+                        ) &
+                        wait $!
+                        rvalue=$?
+                    fi
+                fi
+                umount_btrfs "${mountpoint}" "${mounted}"
+                return ${rvalue}
+            else
+                return 1
+            fi
+        else
+            echo "* Skipping ${device}, already present in the FS ..."
+            return 0
+        fi
+    fi
+}
+
+
+run() {
+    local label="${1}"
+    local mountpoint="${2}"
+    local device="${3}"
+    local noauto="${4}"
+    local force="${5}"
+    shift 5
+    local subvols=("$@")
+
+    local rvalue=0
+
+    # Scan all devices
+    btrfs device scan | awk '{ print "* "$0}'
+
+    if ! [ -b "${device}" ]
+    then
+        echo "* Device ${device} not found!"
+        return 1
+    fi
+    if mkfs_btrfs "${label}" "${device}" "${mountpoint}" "${noauto}" "${force}"
+    then
+        if [ "${#subvols[@]}" -gt "0" ]
+        then
+            create_btrfs_subvolumes "${mountpoint}" "${label}" "${noauto}" "${subvols[@]}"
+            rvalue=$?
+        fi
+        rvalue=0
+    else
+        rvalue=1
+    fi
+
+    # Be sure everything is mounted
+    mount -a
+    return ${rvalue}
+}
+
+
+system_check() {
+    if ! [ -x "$(command -v btrfs)" ]; then
+        echo "Error, btrfs utilities not installed!"
+        return 1
+    fi
+    if ! [ -x "$(command -v mkfs.btrfs)" ]; then
+        echo "Error, mkfs cannot create Btrfs filesystems!"
+        return 1
+    fi
+    if [ "$(id -u)" -ne "0" ]
+    then
+        echo "Error, program not running as root!"
+        return 1
+    fi
+    return 0
+}
+
+
+# Program
+if [ "$0" == "${BASH_SOURCE[0]}" ]
+then
+    POSITIONAL=()
+    SUBVOLUMES=()
+    FSTAB_NOAUTO=0
+    MKFS_FORCE=0
+    while [[ $# -gt 0 ]]
+    do
+        key="${1}"
+        case ${key} in
+            -h|--help)
+                usage
+                exit 0
+            ;;
+            --noauto)
+                FSTAB_NOAUTO=1
+                shift
+            ;;
+            --force)
+                MKFS_FORCE=1
+                shift
+            ;;
+            --subvol)
+                SUBVOLUMES+=("$2")  # save it in an array for later
+                shift # past argument
+                shift #
+            ;;
+            *)
+                POSITIONAL+=("$1")  # save it in an array for later
+                shift               # past argument
+            ;;
+        esac
+    done
+    system_check || exit 1
+    if [ "${#POSITIONAL[@]}" -ne "3" ]
+    then
+          echo "Not enough parameters!. See usage."
+          exit 1
+    else
+          trap 'echo "Be patient"' SIGINT SIGTERM SIGKILL
+          run "${POSITIONAL[0]}" "${POSITIONAL[1]}" "${POSITIONAL[2]}" "${FSTAB_NOAUTO}" "${MKFS_FORCE}" "${SUBVOLUMES[@]}"
+          exit $?
+    fi
+fi
+
