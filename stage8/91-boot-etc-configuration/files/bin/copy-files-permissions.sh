@@ -44,6 +44,8 @@ then
     echo "* Metadata file ${META} not found. Ignoring permissions metadata"
   fi
   echo "* Done $$"
+  exit 0
+else
+  echo "* Input folder ${SRC} not found!"
+  exit 1
 fi
-
-exit 0

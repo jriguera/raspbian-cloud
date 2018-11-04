@@ -6,7 +6,7 @@ Before=cloud-init-local.service
 Before=shutdown.target
 Before=sysinit.target
 Conflicts=shutdown.target
-ConditionFileIsExecutable=/usr/local/bin/cp-files-permissions.sh
+ConditionFileIsExecutable=/bin/copy-files-permissions.sh
 ConditionDirectoryNotEmpty=/%I
 
 [Service]
@@ -16,7 +16,7 @@ RemainAfterExit=yes
 StandardOutput=journal
 User=root
 Group=root
-ExecStart=/usr/local/bin/cp-files-permissions.sh %I /etc
+ExecStart=/bin/copy-files-permissions.sh /%I /etc
 
 [Install]
 WantedBy=cloud-init.target
