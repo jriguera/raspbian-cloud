@@ -7,5 +7,8 @@ on_chroot << EOF
 locale-gen
 EOF
 
-
+on_chroot << EOF
+addgroup --system admin
+adduser pi admin
+EOF
 
