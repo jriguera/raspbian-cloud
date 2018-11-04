@@ -6,6 +6,11 @@
 ## commands to a running Monit daemon. See the Monit Wiki if you want to
 ## enable SSL for the HTTP interface.
 #
+# set httpd port 2812
+#     allow admin:monit      # require user 'admin' with password 'monit'
+#
 set httpd port 2812
-     allow admin:monit      # require user 'admin' with password 'monit'
+    allow monit:admin
+    allow guest:guest read-only
+    allow @admin
 
