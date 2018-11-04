@@ -4,3 +4,6 @@
 [submodule "stage8/50-betterclone/betterclone"]
 	path = stage8/50-betterclone/betterclone
 	url = https://github.com/jriguera/betterclone.git
+[submodule "stage8/51-btrfs-volume-data/rpi-btrfs"]
+	path = stage8/51-btrfs-volume-data/rpi-btrfs
+	url = git@github.com:jriguera/rpi-btrfs.git
