@@ -1,15 +1,19 @@
 #!/bin/bash -e
 
-BACKUP_VOLUME=/mnt/volume/data
+BACKUP_VOLUME=/media/volumes/data
 
 # remove trailing slash
 BACKUP_VOLUME=${BACKUP_VOLUME%%+(/)}
 # start slash
 BACKUP_VOLUME=${BACKUP_VOLUME##+(/)}
 
+# Copy binary
+install -m 755 -g root -o root betterclone/bin/betterclone ${ROOTFS_DIR}/bin
+
 # Copy default configuration
 mkdir -p ${ROOTFS_DIR}/etc/betterclone/
 mkdir -p ${ROOTFS_DIR}/boot/etc/betterclone/
+install -m 644 -g root -o root betterclone/etc/config.env ${ROOTFS_DIR}/boot/etc/betterclone/
 install -m 644 -g root -o root betterclone/etc/config.env ${ROOTFS_DIR}/boot/etc/betterclone/
 
 # Betterclone services
