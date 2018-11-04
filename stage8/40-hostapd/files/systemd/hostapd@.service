@@ -11,7 +11,7 @@ PIDFile=/run/hostapd.%I.pid
 Environment=DAEMON_CONF=
 Environment=DAEMON_OPTS=
 EnvironmentFile=-/etc/default/hostapd
-ExecStartPre=/bin/sh -c "test -r $DAEMON_CONF && exit 1"
+ExecStartPre=/bin/sh -c "test -r $DAEMON_CONF || exit 1"
 ExecStart=/usr/sbin/hostapd "${DAEMON_CONF}" -P /run/hostapd.%I.pid -B $DAEMON_OPTS
 ExecReload=/bin/kill -HUP $MAINPID
 ExecStopPost=/bin/rm -f /run/hostapd.%I.pid
