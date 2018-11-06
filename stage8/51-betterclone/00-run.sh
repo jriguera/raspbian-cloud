@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-BACKUP_VOLUME=/media/volumes/data
+BACKUP_VOLUME=/media/volume-data/data
 
 # remove trailing slash
 BACKUP_VOLUME=${BACKUP_VOLUME%%+(/)}
@@ -27,8 +27,7 @@ on_chroot <<EOF
 # Enable services
 systemctl enable betterclone-backup.target
 systemctl enable betterclone-restore.target
-systemctl enable betterclone-restore@`systemd-escape --path ${BACKUP_VOLUME}`.service
-systemctl enable betterclone-backup@`systemd-escape --path ${BACKUP_VOLUME}`.timer
-systemctl enable betterclone-backup@`systemd-escape --path ${BACKUP_VOLUME}`.service
+systemctl enable "betterclone-restore@`systemd-escape --path ${BACKUP_VOLUME}`.service"
+systemctl enable "betterclone-backup@`systemd-escape --path ${BACKUP_VOLUME}`.timer"
+systemctl enable "betterclone-backup@`systemd-escape --path ${BACKUP_VOLUME}`.service"
 EOF
-
