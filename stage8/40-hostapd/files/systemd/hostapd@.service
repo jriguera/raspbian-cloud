@@ -4,20 +4,15 @@ Requires=network.target
 After=network.target
 Before=wpa_supplicant.service wpa_supplicant@%i.service
 Conflits=wpa_supplicant.service wpa_supplicant@%i.service
-ConditionPathExists=/etc/hostapd/hostapd.conf
+ConditionPathExists=/etc/hostapd/hostapd.%I.conf
 ConditionFileIsExecutable=/usr/sbin/hostapd
 
 [Service]
 Type=forking
 PIDFile=/run/hostapd.%I.pid
-Environment=DAEMON_CONF=
-Environment=DAEMON_OPTS=
-EnvironmentFile=-/etc/default/hostapd
-ExecStartPre=/bin/sh -c "test -r $DAEMON_CONF || exit 1"
-ExecStart=/usr/sbin/hostapd "${DAEMON_CONF}" -P /run/hostapd.%I.pid -B $DAEMON_OPTS
+ExecStart=/usr/sbin/hostapd /etc/hostapd/hostapd.%I.conf -P /run/hostapd.%I.pid -B
 ExecReload=/bin/kill -HUP $MAINPID
 ExecStopPost=/bin/rm -f /run/hostapd.%I.pid
 
 [Install]
 WantedBy=multi-user.target
-
