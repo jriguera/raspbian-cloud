@@ -49,8 +49,8 @@ install -m 644 -g root -o root files/systemd/docker-compose-refresh.timer ${ROOT
 on_chroot <<EOF
 systemctl enable docker-compose.target
 # Enable docker-compose boot service
-systemctl enable docker-compose@`systemd-escape --path ${COMPOSE_CONFIG_FOLDER}`.service
-systemctl enable docker-compose-refresh@`systemd-escape --path ${COMPOSE_CONFIG_FOLDER}`.service
+systemctl enable "docker-compose@`systemd-escape --path ${COMPOSE_CONFIG_FOLDER}`.service"
+systemctl enable "docker-compose-refresh@`systemd-escape --path ${COMPOSE_CONFIG_FOLDER}`.service"
 mkdir -p /${COMPOSE_CONFIG_FOLDER}
 EOF
 
