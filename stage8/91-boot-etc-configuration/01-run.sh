@@ -15,7 +15,7 @@ install -m 644 -g root -o root files/systemd/copy-files-permissions@.service ${R
 
 on_chroot <<EOF
 # Enable service
-systemctl enable copy-files-permissions@`systemd-escape --path ${BOOT_CONFIG_FOLDER}`.service
+systemctl enable "copy-files-permissions@`systemd-escape --path ${BOOT_CONFIG_FOLDER}`.service"
 mkdir -p /${BOOT_CONFIG_FOLDER}
 EOF
 
