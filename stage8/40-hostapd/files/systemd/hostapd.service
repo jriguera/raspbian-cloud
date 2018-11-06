@@ -1,22 +1,22 @@
 [Unit]
-Description=Hostapd IEEE 802.11 AP, IEEE 802.1X/WPA/WPA2/EAP/RADIUS Authenticator (interface-specific version)
+Description=Hostapd IEEE 802.11 AP, IEEE 802.1X/WPA/WPA2/EAP/RADIUS Authenticator
 Requires=network.target
 After=network.target
-Before=wpa_supplicant.service wpa_supplicant@%i.service
-Conflits=wpa_supplicant.service wpa_supplicant@%i.service
+Before=wpa_supplicant.service
+Conflits=wpa_supplicant.service
 ConditionPathExists=/etc/hostapd/hostapd.conf
 ConditionFileIsExecutable=/usr/sbin/hostapd
 
 [Service]
 Type=forking
-PIDFile=/run/hostapd.%I.pid
+PIDFile=/run/hostapd.pid
 Environment=DAEMON_CONF=
 Environment=DAEMON_OPTS=
 EnvironmentFile=-/etc/default/hostapd
 ExecStartPre=/bin/sh -c "test -r $DAEMON_CONF || exit 1"
-ExecStart=/usr/sbin/hostapd "${DAEMON_CONF}" -P /run/hostapd.%I.pid -B $DAEMON_OPTS
+ExecStart=/usr/sbin/hostapd "${DAEMON_CONF}" -P /run/hostapd.pid -B $DAEMON_OPTS
 ExecReload=/bin/kill -HUP $MAINPID
-ExecStopPost=/bin/rm -f /run/hostapd.%I.pid
+ExecStopPost=/bin/rm -f /run/hostapd.pid
 
 [Install]
 WantedBy=multi-user.target
