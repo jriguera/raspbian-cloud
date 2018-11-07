@@ -12,9 +12,7 @@ install -m 755 -g root -o root betterclone/bin/betterclone ${ROOTFS_DIR}/bin
 
 # Copy default configuration
 mkdir -p ${ROOTFS_DIR}/etc/betterclone/
-mkdir -p ${ROOTFS_DIR}/boot/etc/betterclone/
-install -m 644 -g root -o root betterclone/etc/config.env ${ROOTFS_DIR}/boot/etc/betterclone/
-install -m 644 -g root -o root betterclone/etc/config.env ${ROOTFS_DIR}/boot/etc/betterclone/
+install -m 644 -g root -o root betterclone/etc/config.env ${ROOTFS_DIR}/etc/betterclone/
 
 # Betterclone services
 install -m 644 -g root -o root betterclone/systemd/betterclone-backup.target ${ROOTFS_DIR}/lib/systemd/system
