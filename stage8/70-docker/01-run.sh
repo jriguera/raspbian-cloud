@@ -56,5 +56,5 @@ EOF
 
 # Copy default configuration
 mkdir -p ${ROOTFS_DIR}/${COMPOSE_CONFIG_FOLDER}
-install -m 644 -g root -o root files/boot/docker-compose.yml ${ROOTFS_DIR}/${COMPOSE_CONFIG_FOLDER}
+install -m 644 -g root -o root files/boot/docker-compose.yml ${ROOTFS_DIR}/${COMPOSE_CONFIG_FOLDER}/boot.yml
 
