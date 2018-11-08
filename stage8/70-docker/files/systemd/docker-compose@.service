@@ -4,6 +4,7 @@ Requires=network-online.target docker.service
 Wants=network-online.target docker.service
 After=network-online.target docker.service
 PartOf=docker-compose.target
+ConditionPathExists=/%I
 
 [Service]
 WorkingDirectory=/%I
@@ -11,11 +12,15 @@ Type=oneshot
 RemainAfterExit=yes
 User=root
 Group=root
-ExecStartPre=/usr/local/bin/docker-compose --no-ansi rm -fv
-ExecStart=/usr/local/bin/docker-compose --no-ansi up -d
-ExecStop=/usr/local/bin/docker-compose --no-ansi down
-ExecReload=/usr/local/bin/docker-compose --no-ansi pull
-ExecReload=/usr/local/bin/docker-compose --no-ansi up -d
+Environment=NAME=%I
+Environment=ENABLED=1
+EnvironmentFile=-/%I/config.env
+ExecStartPre=/bin/sh -c "test x$ENABLED = x1 || exit 1"
+ExecStartPre=/usr/local/bin/docker-compose -p "${NAME}" --no-ansi rm -fv
+ExecStart=/usr/local/bin/docker-compose -p "${NAME}" --no-ansi up -d --no-color
+ExecStop=/usr/local/bin/docker-compose -p "${NAME}" --no-ansi down
+ExecReload=/usr/local/bin/docker-compose -p "${NAME}" --no-ansi pull
+ExecReload=/usr/local/bin/docker-compose -p "${NAME}" --no-ansi up -d --no-color
 
 [Install]
 WantedBy=docker-compose.target
