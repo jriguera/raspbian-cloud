@@ -9,8 +9,10 @@ check process avahid with pidfile /run/avahi-daemon/pid
    group avahid
 
 check file avahi_bin with path /usr/sbin/avahi-daemon
+   if does not exist then unmonitor
    if failed permission 755 then alert
    if failed uid root then alert
    if failed gid root then alert
    group avahid
+   group system
 

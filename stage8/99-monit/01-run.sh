@@ -21,4 +21,6 @@ ln -sf ../conf-available/node_exporter
 ln -sf ../conf-available/opensmtpd
 ln -sf ../conf-available/openssh-server
 ln -sf ../conf-available/rngd
+ln -sf ../conf-available/hostapd
+ln -sf ../conf-available/avahi-daemon
 EOF
