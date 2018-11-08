@@ -27,5 +27,4 @@ systemctl enable betterclone-backup.target
 systemctl enable betterclone-restore.target
 systemctl enable "betterclone-restore@`systemd-escape --path ${BACKUP_VOLUME}`.service"
 systemctl enable "betterclone-backup@`systemd-escape --path ${BACKUP_VOLUME}`.timer"
-systemctl enable "betterclone-backup@`systemd-escape --path ${BACKUP_VOLUME}`.service"
 EOF
