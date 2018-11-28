@@ -46,8 +46,8 @@ timezone: Europe/Amsterdam
 #      default: fqdn as returned by the metadata service.  on EC2 'hostname'
 #               is used, so this is like: ip-10-244-170-199.ec2.internal
 #
-hostname: raspi
-fqdn: raspi.lar
+hostname: raspberrypi
+fqdn: raspberrypi.local
 
 ## /etc/hosts management
 #
@@ -97,10 +97,9 @@ manage_etc_hosts: true
 #
 manage_resolv_conf: true
 resolv_conf:
-  nameservers: ['127.0.0.1']
-  searchdomains:
-    - lar
-  domain: lar
+  nameservers: [ 127.0.0.1 ]
+  domain: local
+  searchdomains: [ local ]
 
 ## resize_rootfs should the / filesytem be resized on first boot
 # this allows you to launch an instance with a larger disk / partition

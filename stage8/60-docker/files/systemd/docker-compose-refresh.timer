@@ -1,0 +1,13 @@
+[Unit]
+Description=Refresh images and update containers
+Requires=docker-compose.target
+After=docker-compose.target
+
+[Timer]
+OnCalendar=Fri *-*-* 08:00:00
+OnBootSec=45min
+Unit=docker-compose-refresh.service
+
+[Install]
+WantedBy=timers.target docker-compose.target
+
