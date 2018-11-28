@@ -1,3 +1,9 @@
 [submodule "pi-gen"]
 	path = pi-gen
 	url = https://github.com/RPi-Distro/pi-gen.git
+[submodule "stage8/70-betterclone-backups/betterclone"]
+	path = stage8/70-betterclone-backups/betterclone
+	url = https://github.com/jriguera/betterclone.git
+[submodule "stage8/98-btrfs-data-volume/rpi-btrfs"]
+	path = stage8/98-btrfs-data-volume/rpi-btrfs
+	url = https://github.com/jriguera/rpi-btrfs.git
