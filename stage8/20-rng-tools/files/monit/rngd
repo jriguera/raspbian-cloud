@@ -3,6 +3,14 @@ check process rngd with pidfile /run/rngd.pid
    stop  program = "/usr/sbin/service rng-tools stop"
    if 3 restarts with 5 cycles then alert
    if 5 restarts with 5 cycles then timeout
+   depends on rngd_bin
    group system
    group hwrandom
+   group rngd
 
+check file rngd_bin with path /usr/sbin/rngd
+   if does not exist then unmonitor
+   include /etc/monit/templates/rootbin
+   group hwrandom
+   group rngd
+   group system

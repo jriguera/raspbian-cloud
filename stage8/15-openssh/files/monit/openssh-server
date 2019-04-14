@@ -4,20 +4,18 @@ check process sshd with pidfile /run/sshd.pid
    if failed host localhost port 22 with proto ssh then restart
    if 3 restarts with 5 cycles then alert
    if 5 restarts with 5 cycles then timeout
-   depend on sshd_bin
-   depend on sftp_bin
-   depend on sshd_rc
-   depend on sshd_rsa_key
-   depend on sshd_dsa_key
+   depends on sshd_bin, sftp_bin, sshd_rc, sshd_rsa_key, sshd_dsa_key
    group system
    group sshd
 
 check file sshd_bin with path /usr/sbin/sshd
+   if does not exist then unmonitor
    include /etc/monit/templates/rootbin
    group sshd
    group system
 
 check file sftp_bin with path /usr/lib/openssh/sftp-server
+   if does not exist then unmonitor
    include /etc/monit/templates/rootbin
    group sshd
    group system

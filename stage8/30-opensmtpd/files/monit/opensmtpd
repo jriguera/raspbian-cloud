@@ -4,14 +4,12 @@ check process smtpd with pidfile /run/smtpd.pid
    if failed port 25 protocol smtp then restart
    if 3 restarts with 5 cycles then alert
    if 5 restarts with 5 cycles then timeout
-   depend on smtpd_bin
+   depends on smtpd_bin
    group system
    group mail
 
 check file smtpd_bin with path /usr/sbin/smtpd
-   if failed checksum then unmonitor
-   if failed permission 0755 then unmonitor
-   if failed uid root then unmonitor
-   if failed gid root then unmonitor
+   if does not exist then unmonitor
+   include /etc/monit/templates/rootbin
    group mail
-
+   group system
