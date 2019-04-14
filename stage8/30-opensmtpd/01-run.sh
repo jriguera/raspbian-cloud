@@ -2,6 +2,7 @@
 
 # Config
 install -m 644 -g root -o root files/smtpd.conf ${ROOTFS_DIR}/etc/
+install -m 644 -g root -o root files/default ${ROOTFS_DIR}/etc/default/smtp
 
 # Create config folder
 on_chroot << EOF

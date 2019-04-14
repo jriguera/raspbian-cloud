@@ -6,6 +6,9 @@ ConditionPathExists=/etc/smtpd.conf
 
 [Service]
 Type=simple
+Environment=SMTPD_ENABLED=1
+EnvironmentFile=-/etc/default/smtp
+ExecStartPre=/bin/sh -c "test x$SMTPD_ENABLED = x1 || exit 1"
 ExecStartPre=/usr/sbin/smtpd -n
 ExecStart=/usr/sbin/smtpd -d
 ExecStop=/usr/sbin/smtpctl stop
