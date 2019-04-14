@@ -1,12 +1,12 @@
 #!/bin/bash -e
 
-VERSION="0.16.0"
+VERSION="0.17.0"
 ARCH="armv6"
 
 # Install and enable Prometheus node_exporter
 on_chroot <<EOF
 curl -sSL https://github.com/prometheus/node_exporter/releases/download/v${VERSION}/node_exporter-${VERSION}.linux-${ARCH}.tar.gz -o /tmp/node_exporter.tar.gz
-tar -xvf /tmp/node_exporter.tar.gz -C /usr/local/sbin/ --strip-components=1 --wildcards --no-anchored node_exporter
+tar -xvf /tmp/node_exporter.tar.gz -C /usr/sbin/ --strip-components=1 --wildcards --no-anchored node_exporter
 rm -f /tmp/node_exporter.tar.gz
 # System user and group
 addgroup --system node_exporter

@@ -2,7 +2,7 @@
 Description=Prometheus Node Exporter
 Wants=network-online.target
 After=network-online.target
-ConditionFileIsExecutable=/usr/local/sbin/node_exporter
+ConditionFileIsExecutable=/bin/node_exporter
 
 [Service]
 User=node_exporter
@@ -13,7 +13,7 @@ Environment=OPTIONS=
 Environment=ENABLED=1
 EnvironmentFile=-/etc/default/node_exporter
 ExecStartPre=/bin/sh -c "test x$ENABLED = x1 || exit 1"
-ExecStart=/usr/local/sbin/node_exporter $OPTIONS
+ExecStart=/usr/sbin/node_exporter $OPTIONS
 ExecStartPost=/bin/sh -c 'sleep 2 && pgrep -U node_exporter -x node_exporter > /run/node_exporter.pid'
 ExecStopPost=/bin/rm -f /run/node_exporter.pid
 KillMode=process
