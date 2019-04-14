@@ -41,7 +41,7 @@ check filesystem ${LABEL}fs with path ${VOLUME}
     if changed fsflags then alert
     group system
 
-check program ${LABEL}-raid with path "/bin/btrfs-check -m ${VOLUME}"
+check program ${LABEL}-status with path "/bin/btrfs-check -m ${VOLUME}"
     if status != 0 then alert
     if status != 0 for 5 cycles then exec "/bin/btrfs-balance-raid ${VOLUME} ${LABEL}"
     if status != 0 for 5 cycles then unmonitor
