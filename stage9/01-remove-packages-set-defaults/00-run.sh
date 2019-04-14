@@ -19,3 +19,6 @@ install -m 644 files/cmdline.txt "${ROOTFS_DIR}/boot/"
 # install -m 755 files/rc.local "${ROOTFS_DIR}/etc/"
 
 rm -f "${ROOTFS_DIR}/etc/systemd/system/dhcpcd.service.d/wait.conf"
+
+# ucf
+install -m 644 files/ucf.conf ${ROOTFS_DIR}/etc/ucf.conf
