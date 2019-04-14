@@ -10,9 +10,11 @@ ConditionFileIsExecutable=/usr/sbin/hostapd
 [Service]
 Type=forking
 PIDFile=/run/hostapd.pid
-Environment=DAEMON_CONF=
+Environment=DAEMON_CONF=/etc/hostapd/hostapd.conf
 Environment=DAEMON_OPTS=
+Environment=ENABLED=1
 EnvironmentFile=-/etc/default/hostapd
+ExecStartPre=/bin/sh -c "test x$ENABLED = x1 || exit 1"
 ExecStartPre=/bin/sh -c "test -r $DAEMON_CONF || exit 1"
 ExecStart=/usr/sbin/hostapd "${DAEMON_CONF}" -P /run/hostapd.pid -B $DAEMON_OPTS
 ExecReload=/bin/kill -HUP $MAINPID

@@ -15,3 +15,6 @@ DAEMON_CONF="/etc/hostapd/hostapd.conf"
 # configured by the systemd service and must not be added to DAEMON_OPTS.
 #
 #DAEMON_OPTS=""
+
+# Enabled at startup
+ENABLED=1
