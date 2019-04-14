@@ -1,0 +1,5 @@
+#!/bin/sh
+echo
+echo "Services status: "
+/usr/bin/monit report | sed -e 's/^/     /'
+echo

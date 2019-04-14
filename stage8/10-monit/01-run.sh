@@ -15,3 +15,5 @@ on_chroot << EOF
 systemctl enable monit
 mkdir -p /etc/monit/conf-enabled
 EOF
+
+install -m 755 -g root -o root files/update-motd.d/* ${ROOTFS_DIR}/etc/update-motd.d/
