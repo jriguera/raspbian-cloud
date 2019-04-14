@@ -86,7 +86,7 @@ fqdn: raspberrypi.local
 #      127.0.1.1.  For example:
 #        127.0.1.2 myhost.fqdn.example.com myhost whatup.example.com
 #
-manage_etc_hosts: true
+manage_etc_hosts: false
 
 ## This module is intended to manage resolv.conf in environments where early 
 # configuration of resolv.conf is necessary for further bootstrapping and/or
@@ -95,11 +95,12 @@ manage_etc_hosts: true
 # will use sysconfig, this module is likely to be of little use unless those
 # are configured correctly.
 #
-manage_resolv_conf: true
 resolv_conf:
   nameservers: [ 127.0.0.1 ]
   domain: local
   searchdomains: [ local ]
+
+manage_resolv_conf: false
 
 ## resize_rootfs should the / filesytem be resized on first boot
 # this allows you to launch an instance with a larger disk / partition
