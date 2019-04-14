@@ -15,20 +15,25 @@ check process sshd with pidfile /run/sshd.pid
 check file sshd_bin with path /usr/sbin/sshd
    include /etc/monit/templates/rootbin
    group sshd
+   group system
 
 check file sftp_bin with path /usr/lib/openssh/sftp-server
    include /etc/monit/templates/rootbin
    group sshd
+   group system
 
 check file sshd_rsa_key with path /etc/ssh/ssh_host_rsa_key
    include /etc/monit/templates/rootstrict
    group sshd
+   group system
 
 check file sshd_dsa_key with path /etc/ssh/ssh_host_dsa_key
    include /etc/monit/templates/rootstrict
    group sshd
+   group system
 
 check file sshd_rc with path /etc/ssh/sshd_config
    include /etc/monit/templates/rootrc
    group sshd
+   group system
 

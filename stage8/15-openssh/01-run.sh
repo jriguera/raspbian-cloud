@@ -1,5 +1,12 @@
 #!/bin/bash -e
 
+# Config
+install -m 644 -g root -o root files/default ${ROOTFS_DIR}/etc/default/ssh
+
+# systemctl override
+install -m 775 -g root -o root -d ${ROOTFS_DIR}/etc/systemd/system/ssh.service.d
+install -m 644 -g root -o root files/systemd/override.conf ${ROOTFS_DIR}/etc/systemd/system/ssh.service.d
+
 # Enable ssh
 on_chroot << EOF
 systemctl enable ssh
