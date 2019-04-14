@@ -7,3 +7,6 @@
 [submodule "stage8/98-btrfs-data-volume/rpi-btrfs"]
 	path = stage8/98-btrfs-data-volume/rpi-btrfs
 	url = https://github.com/jriguera/rpi-btrfs.git
+[submodule "stage8/61-docker-compose/docker-rpi-dockercompose"]
+	path = stage8/61-docker-compose/docker-rpi-dockercompose
+	url = https://github.com/jriguera/docker-rpi-dockercompose.git

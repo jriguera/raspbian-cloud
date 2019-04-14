@@ -9,8 +9,8 @@ check process dockerd with pidfile /run/docker.pid
    group docker
 
 check file docker_bin with path /usr/bin/docker
-   if failed permission 755 then alert
-   if failed uid root then alert
-   if failed gid root then alert
+   if does not exist then unmonitor
+   include /etc/monit/templates/rootbin
    group docker
+   group system
 
