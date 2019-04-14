@@ -1,0 +1,15 @@
+check process bluetoothd with pidfile /run/bluetoothd.pid
+  start program = "/usr/sbin/service bluetooth start"
+  stop program = "/usr/sbin/service bluetooth stop"
+  if 3 restarts within 5 cycles then timeout
+  depends on bluetoothd_bin
+  group system
+  group bluetooth
+
+check file bluetoothd_bin with path /usr/lib/bluetooth/bluetoothd
+  # if failed checksum then unmonitor
+  if failed permission 755 then unmonitor
+  if failed uid root then unmonitor
+  if failed gid root then unmonitor
+  group system
+  group bluetooth
