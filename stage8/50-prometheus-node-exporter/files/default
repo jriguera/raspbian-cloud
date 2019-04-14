@@ -2,5 +2,4 @@
 ENABLED=1
 
 # Prometheus node_exporter options
-#OPTIONS="--collector.textfile.directory /var/lib/node_exporter/textfile_collector"
-OPTIONS=""
+OPTIONS="--collector.textfile.directory /var/lib/node_exporter/textfile_collector"

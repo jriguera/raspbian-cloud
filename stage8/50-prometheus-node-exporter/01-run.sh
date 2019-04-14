@@ -14,6 +14,8 @@ adduser --system --home /var/lib/misc --shell /bin/false --no-create-home  --gec
 EOF
 
 install -m 644 -g root -o root files/default ${ROOTFS_DIR}/etc/default/node_exporter
+install -m 755 -g root -o root -d ${ROOTFS_DIR}/var/lib/node_exporter/textfile_collector
+install -m 755 -g root -o root files/textfile_collector/* ${ROOTFS_DIR}/var/lib/node_exporter/textfile_collector/
 
 # Systemd service
 install -m 644 -g root -o root files/systemd/node_exporter.service ${ROOTFS_DIR}/lib/systemd/system
