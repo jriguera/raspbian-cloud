@@ -10,3 +10,6 @@
 [submodule "stage8/61-docker-compose/docker-rpi-dockercompose"]
 	path = stage8/61-docker-compose/docker-rpi-dockercompose
 	url = https://github.com/jriguera/docker-rpi-dockercompose.git
+[submodule "mender-convert"]
+	path = mender-convert
+	url = https://github.com/mendersoftware/mender-convert.git
