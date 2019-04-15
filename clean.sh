@@ -6,4 +6,3 @@ umount work/*-RaspbianCloud/stage*/rootfs/dev
 umount work/*-RaspbianCloud/stage*/rootfs/proc
 
 rm -rf work/*-RaspbianCloud
-
