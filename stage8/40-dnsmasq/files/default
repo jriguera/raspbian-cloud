@@ -1,6 +1,7 @@
 # Whether or not to run the dnsmasq daemon; set to 0 to disable.
 ENABLED=1
 
+# Options
 #DNSMASQ_OPTS="--conf-file=/etc/dnsmasq.alt"
 
 # By default search this drop directory for configuration options.
