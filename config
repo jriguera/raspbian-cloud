@@ -3,12 +3,15 @@ DEPLOY_ZIP=0
 IMG_NAME='RaspbianCloud'
 
 # mender-convert
-DEVICE_TYPE="raspberrypi3"
-RAW_DISK_IMAGE="$(ls -c deploy/*optimized.img | head -n1)"
-ARTIFACT_NAME="$(basename ${RAW_DISK_IMAGE%%.*})"
-MENDER_DISK_IMAGE="${ARTIFACT_NAME}.sdimg"
-MENDER_SERVER="https://hosted.mender.io"
-TENANT_TOKEN="tokent"
+if find deploy -iname '*optimized.img' >/dev/null 2>&1
+then
+    DEVICE_TYPE="raspberrypi3"
+    RAW_DISK_IMAGE="$(ls -c deploy/*optimized.img | head -n1)"
+    ARTIFACT_NAME="$(basename ${RAW_DISK_IMAGE%%.*})"
+    MENDER_DISK_IMAGE="${ARTIFACT_NAME}.sdimg"
+    MENDER_SERVER="https://hosted.mender.io"
+    TENANT_TOKEN="tokent"
+fi
 
 # Generic
 LC_ALL=C
