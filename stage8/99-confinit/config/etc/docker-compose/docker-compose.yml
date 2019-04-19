@@ -1,0 +1,32 @@
+# Variables defined in .env file
+version: '3'
+
+services:
+  portainer:
+    container_name: portainer2
+    image: portainer/portainer
+    labels:
+      description: "Portainer: Web interface to manage docker containers"
+      system: true
+    volumes:
+    - /data/docker/portainer2:/data
+    - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+    - "9999:9000"
+    networks:
+    - frontend
+    restart: always
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+networks:
+  backend:
+  frontend:
+    driver: bridge

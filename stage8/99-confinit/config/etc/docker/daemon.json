@@ -1,0 +1,12 @@
+{
+  "labels": [ "os=linux", "arch=arm64" ],
+  "experimental": false,
+  "storage-driver": "overlay2",
+  "log-driver": "json-file",
+  "log-level": "info",
+  "log-opts": {
+    "max-size": "10m",
+    "max-file": "2"
+  },
+  "debug": false
+}

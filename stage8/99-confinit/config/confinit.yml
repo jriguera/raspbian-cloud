@@ -1,0 +1,64 @@
+logoutput: split
+loglevel: debug
+datafile: /boot/config/parameters.yml
+
+# Destinations
+etc: &etc /etc
+data: &data /data
+local: &local /usr/local
+
+process:
+- source: /boot/config/etc
+  operations:
+  - destination: *etc
+    regex: '.*/default/.*\.template'
+  - destination: *etc
+    regex: '.*avahi.*'
+    rendercondition: '{{if not .Data.avahi}}Avahi configuration not defined {{end}}'
+  - destination: *etc
+    regex: '.*hostapd.*'
+    rendercondition: '{{if not .Data.hostapd}}No Wifi Access Point defined {{end}}'
+    permissions:
+    - mode: "0640"
+      glob: '*/hostapd.conf'
+  - destination: *etc
+    regex: '.*bluetooth.*'
+    rendercondition: '{{if not .Data.bluetooth}}Bluetooth disabled{{end}}'
+  - destination: *etc
+    regex: '.*wpa_supplicant.*'
+    permissions:
+    - mode: "0640"
+      glob: '*/wpa_supplicant.conf'
+  - destination: *etc
+    regex: '.*\.template'
+  - destination: *etc
+    template: false
+- source: /boot/config/data
+  operations:
+  - destination: *data
+    regex: '.*\.template'
+  - destination: *data
+    template: false
+- source: /boot/config/local
+  operations:
+  - destination: *local
+    template: false
+    permissions:
+    - mode: "0755"
+      glob: '*/bin/*'
+    - mode: "0755"
+      glob: '*/sbin/*'
+- source: /boot/config/scripts
+  operations:
+  - destination: /tmp/run
+    template: true
+    delextension: false
+    default:
+      mode:
+        file: "0755"
+    command:
+      cmd: ["{{.Destination}}"]
+
+finish:
+  cmd: ["rm", "-rf", "/tmp/run"]
+
