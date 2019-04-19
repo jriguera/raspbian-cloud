@@ -16,7 +16,7 @@ rm -f "${ROOTFS_DIR}/etc/init.d/resize2fs_once"
 # Attention: "  quietquiet" is on purpose in order to hack the greq in /usr/lib/raspi-config/init_resize.sh
 # and keep quiet in the kernel cmd
 install -m 644 files/cmdline.txt "${ROOTFS_DIR}/boot/"
-# install -m 755 files/rc.local "${ROOTFS_DIR}/etc/"
+install -m 755 files/rc.local "${ROOTFS_DIR}/etc/"
 
 rm -f "${ROOTFS_DIR}/etc/systemd/system/dhcpcd.service.d/wait.conf"
 
