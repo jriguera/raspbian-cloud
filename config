@@ -3,7 +3,7 @@ DEPLOY_ZIP=0
 IMG_NAME='RaspbianCloud'
 
 # mender-convert
-if find deploy -iname '*optimized.img' >/dev/null 2>&1
+if ls deploy/*optimized.img >/dev/null 2>&1
 then
     DEVICE_TYPE="raspberrypi3"
     RAW_DISK_IMAGE="$(ls -c deploy/*optimized.img | head -n1)"
@@ -14,4 +14,4 @@ then
 fi
 
 # Generic
-LC_ALL=C
+export LC_ALL=C
