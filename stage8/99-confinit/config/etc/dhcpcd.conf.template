@@ -60,9 +60,9 @@ interface {{ $key }}
   {{ end }}
 {{ end }}
 
-
 {{ range $key, $value := .Data.networking }}
-  {{ if ne $value.profile "dhcp" }}
+  {{ if $value.profile }}
+    {{ if ne $value.profile "dhcp" }}
 interface {{ $key }}
 {{ if $value.nolink }}nolink
 {{ end -}}
@@ -74,6 +74,6 @@ interface {{ $key }}
 {{ end -}}
 {{ if $value.forward }}script /etc/hostapd/forwarding-{{ $value.forward }}.sh
 {{ end -}}
-  {{ end }}
-{{ end }}
-
+    {{ end }}                                                                                                                                         
+  {{ end }}                                                                                                                                           
+{{ end }}                                                                                                                                             

@@ -24,7 +24,7 @@ install -m 644 -g root -o root confinit/systemd/confinit@.service ${ROOTFS_DIR}/
 
 on_chroot <<EOF
 # Enable service
+mv "/lib/systemd/system/confinit@.service" "/lib/systemd/system/confinit@`systemd-escape --path ${BOOT_CONFIG_FOLDER}`.service"
 systemctl enable "confinit@`systemd-escape --path ${BOOT_CONFIG_FOLDER}`.service"
 mkdir -p /${BOOT_CONFIG_FOLDER}
 EOF
-

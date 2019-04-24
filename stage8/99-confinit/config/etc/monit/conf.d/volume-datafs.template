@@ -8,7 +8,9 @@ check filesystem volume-datafs with path /media/volume-data
     if inode usage > 95% then alert
     if changed fsflags then alert
     group system
+    group datafs
 
-check program volume-data-status with path "/bin/btrfs-check -m /media/volume-data"
+check program volume-datafs-status with path "/bin/btrfs-check -m /media/volume-data"
     if status != 0 then alert
     group system
+    group datafs

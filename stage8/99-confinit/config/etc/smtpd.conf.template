@@ -2,7 +2,7 @@
 # See smtpd.conf(5) for more information.
 
 # To accept external mail, replace with: listen on all
-listen on {{ if .Data.mail.iface }}{{ .Data.mail.iface }}{{ else }}lo0{{ end }}
+listen on {{ if .Data.mail.iface }}{{ .Data.mail.iface }}{{ else }}lo{{ end }}
 
 # Expire after n days
 expire {{ if .Data.mail.expire }}{{ .Data.mail.expire }}{{ else }}7d{{ end }}

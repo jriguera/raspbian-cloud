@@ -42,14 +42,10 @@ networking:
        - 1.1.1.1
        - 8.8.8.8
   wlan0:
-    wlan:
-    - ssid: Hola
-      psk: wifi
-      scan_ssid: 1
-#    profile: 'static'
-#    ip: 10.1.1.1/24
-#    forward: 'eth0'
-#    nolink: true
+    profile: 'static'
+    ip: 10.1.1.1/24
+    forward: 'eth0'
+    nolink: true
 
 ### condition services
 
@@ -119,7 +115,7 @@ avahi:
 #  leasing: "24h"
 
 #mail:
-#  iface: lo0
+#  iface: lo
 #  expire: 7d
 #  alias:
 #    root: 'root@gmail.com'
