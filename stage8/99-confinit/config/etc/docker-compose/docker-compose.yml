@@ -3,16 +3,16 @@ version: '3'
 
 services:
   portainer:
-    container_name: portainer2
+    container_name: portainer
     image: portainer/portainer
     labels:
       description: "Portainer: Web interface to manage docker containers"
       system: true
     volumes:
-    - /data/docker/portainer2:/data
+    - /data/docker/portainer:/data
     - /var/run/docker.sock:/var/run/docker.sock
     ports:
-    - "9999:9000"
+    - "9000:9000"
     networks:
     - frontend
     restart: always
