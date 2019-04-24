@@ -7,13 +7,15 @@ ARCH="armv6"
 on_chroot <<EOF
 curl -sSL https://github.com/prometheus/node_exporter/releases/download/v${VERSION}/node_exporter-${VERSION}.linux-${ARCH}.tar.gz -o /tmp/node_exporter.tar.gz
 tar -xvf /tmp/node_exporter.tar.gz -C /usr/sbin/ --strip-components=1 --wildcards --no-anchored node_exporter
+chown root.root /usr/sbin/node_exporter
+chmod a+x /usr/sbin/node_exporter
 rm -f /tmp/node_exporter.tar.gz
 # System user and group
-addgroup --system node_exporter
-adduser --system --home /var/lib/misc --shell /bin/false --no-create-home  --gecos "Prometheus Node Exporter" --ingroup node_exporter --disabled-password --disabled-login  node_exporter
+addgroup --system nodexporter
+adduser --system --home /var/lib/misc --shell /bin/false --no-create-home  --gecos "Prometheus Node Exporter" --ingroup nodexporter --disabled-password --disabled-login nodexporter
 EOF
 
-install -m 644 -g root -o root files/default ${ROOTFS_DIR}/etc/default/node_exporter
+install -m 664 -g root -o root files/default ${ROOTFS_DIR}/etc/default/node_exporter
 install -m 755 -g root -o root -d ${ROOTFS_DIR}/var/lib/node_exporter/textfile_collector
 install -m 755 -g root -o root files/textfile_collector/* ${ROOTFS_DIR}/var/lib/node_exporter/textfile_collector/
 
