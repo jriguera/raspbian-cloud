@@ -29,7 +29,7 @@ EOF
 
 # Monit
 install -m 775 -g root -o root -d ${ROOTFS_DIR}/etc/monit/conf.d
-cat <<EOF >"${ROOTFS_DIR}/etc/monit/conf.d/${LABEL}"
+cat <<EOF >"${ROOTFS_DIR}/etc/monit/conf.d/${LABEL}fs"
 ## Check filesystem permissions, uid, gid, space and inode usage. Other services,
 ## such as databases, may depend on this resource and an automatically graceful
 ## stop may be cascaded to them before the filesystem will become full and data
@@ -40,13 +40,15 @@ check filesystem ${LABEL}fs with path ${VOLUME}
     if inode usage > 95% then alert
     if changed fsflags then alert
     group system
+    group ${LABEL}fs
 
-check program ${LABEL}-status with path "/bin/btrfs-check -m ${VOLUME}"
+check program ${LABEL}fs-status with path "/bin/btrfs-check -m ${VOLUME}"
     if status != 0 then alert
     if status != 0 for 5 cycles then exec "/bin/btrfs-balance-raid ${VOLUME} ${LABEL}"
     if status != 0 for 5 cycles then unmonitor
     depends on ${LABEL}fs
     group system
+    group ${LABEL}fs
 EOF
 
 # Systemd
