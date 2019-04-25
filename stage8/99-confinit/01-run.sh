@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-VERSION="0.3.2"
+VERSION="$(cat confinit/VERSION)"
 ARCH="arm6"
 
 BOOT_CONFIG_FOLDER=/boot/config
