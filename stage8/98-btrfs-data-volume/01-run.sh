@@ -54,7 +54,7 @@ EOF
 install -m 644 -g root -o root rpi-btrfs/systemd/*.service "${ROOTFS_DIR}/lib/systemd/system/${LABEL}@.service"
 
 # udev rules
-install -m 644 -g root -o root rpi-btrfs/udev/* "${ROOTFS_DIR}/etc/udev/rules.d/
+install -m 644 -g root -o root rpi-btrfs/udev/* ${ROOTFS_DIR}/etc/udev/rules.d/
 
 # Default config
 cat <<EOF >"${ROOTFS_DIR}/etc/default/${LABEL}"
