@@ -1,9 +1,9 @@
 #!/bin/bash -e
 
 LABEL=volume-data
-VOLUME=/media/volume-data
+VOLUME="/media/${LABEL}"
 
-DATA_SUBVOL=/media/volume-data/data
+DATA_SUBVOL="${VOLUME}/data"
 DATA_MOUNTPOINT=/data
 DATA_LABEL=data
 
@@ -11,11 +11,11 @@ DATA_LABEL=data
 
 # remove trailing slash
 DATA_SUBVOL=${BACKUP_SUBVOL%%+(/)}
-VOLUME=${VOLUME%%+(/)}
+#VOLUME=${VOLUME%%+(/)}
 
 # start slash
 DATA_SUBVOL=${BACKUP_SUBVOL##+(/)}
-VOLUME_SYSTEMD=$(systemd-escape --path ${VOLUME##+(/)})
+#VOLUME_SYSTEMD=$(systemd-escape --path ${VOLUME##+(/)})
 
 # Copy binary
 install -m 755 -g root -o root rpi-btrfs/bin/* ${ROOTFS_DIR}/bin
@@ -44,7 +44,6 @@ check filesystem ${LABEL}fs with path ${VOLUME}
 
 check program ${LABEL}fs-status with path "/bin/btrfs-check -m ${VOLUME}"
     if status != 0 then alert
-    if status != 0 for 5 cycles then exec "/bin/btrfs-balance-raid ${VOLUME} ${LABEL}"
     if status != 0 for 5 cycles then unmonitor
     depends on ${LABEL}fs
     group system
@@ -52,27 +51,30 @@ check program ${LABEL}fs-status with path "/bin/btrfs-check -m ${VOLUME}"
 EOF
 
 # Systemd
-install -m 644 -g root -o root "rpi-btrfs/systemd/media-volume\x2ddata@.service" "${ROOTFS_DIR}/lib/systemd/system/${VOLUME_SYSTEMD}@.service"
+install -m 644 -g root -o root rpi-btrfs/systemd/*.service "${ROOTFS_DIR}/lib/systemd/system/${LABEL}@.service"
+
+# udev rules
+install -m 644 -g root -o root rpi-btrfs/udev/* "${ROOTFS_DIR}/etc/udev/rules.d/
 
 # Default config
-cat <<EOF >"${ROOTFS_DIR}/etc/default/${VOLUME_SYSTEMD}"
-# media-volume-data@.service configuration
+cat <<EOF >"${ROOTFS_DIR}/etc/default/${LABEL}"
+# ${LABEL}@.service configuration
 LABEL="${LABEL}"
 SUBVOLS="--subvol ${DATA_LABEL}:${DATA_MOUNTPOINT}"
 DATA_LABEL="${DATA_LABEL}"
+
 # Only for subvols
 MOUNT_OPTS="defaults,noatime,nodiratime"
 EOF
 
-
-# fstab for automatic setup
+# mkdir volume
 mkdir -p ${ROOTFS_DIR}${VOLUME}
-echo >> ${ROOTFS_DIR}/etc/fstab
-echo "LABEL=${LABEL}	${VOLUME}	btrfs	defaults,noatime,nodiratime,x-systemd.after=/dev/sda,x-systemd.after=/dev/sdb,x-systemd.after=${VOLUME_SYSTEMD}@dev-sda.service,x-systemd.after=${VOLUME_SYSTEMD}@dev-sdb.service		0 	2" >> ${ROOTFS_DIR}/etc/fstab
 
 
 # Backups
 on_chroot <<EOF
+# Enable devices
+
 # Enable backups with betterclone
 systemctl enable betterclone-backup.target
 systemctl enable betterclone-restore.target
