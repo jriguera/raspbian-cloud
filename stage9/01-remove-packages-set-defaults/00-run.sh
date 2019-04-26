@@ -1,7 +1,17 @@
 #!/bin/bash -e
 
 on_chroot << EOF
-apt-get -y purge xauth samba-common cifs-utils libnfsidmap2 nfs-common xdg-user-dirs triggerhappy
+apt-get -y purge \
+  xauth \
+  samba-common \
+  cifs-utils \
+  libnfsidmap2 \
+  nfs-common \
+  xdg-user-dirs \
+  triggerhappy \
+  paxctld \
+  btrbk \
+  pv 
 EOF
 
 rm -rf "${ROOTFS_DIR}/etc/cifs-utils"
