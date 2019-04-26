@@ -5,7 +5,7 @@
 ## timezone: set the timezone for this instance
 # the value of 'timezone' must exist in /usr/share/zoneinfo
 #
-timezone: Europe/Amsterdam
+#timezone: Europe/Amsterdam
 
 ## hostname and /etc/hosts management
 # cloud-init can handle updating some entries in /etc/hosts,
@@ -46,8 +46,8 @@ timezone: Europe/Amsterdam
 #      default: fqdn as returned by the metadata service.  on EC2 'hostname'
 #               is used, so this is like: ip-10-244-170-199.ec2.internal
 #
-hostname: raspberrypi
-fqdn: raspberrypi.local
+#hostname: raspberrypi
+#fqdn: raspberrypi.local
 
 ## /etc/hosts management
 #
@@ -95,11 +95,11 @@ manage_etc_hosts: false
 # will use sysconfig, this module is likely to be of little use unless those
 # are configured correctly.
 #
-resolv_conf:
-  nameservers: [ 127.0.0.1 ]
-  domain: local
-  searchdomains: [ local ]
-
+#resolv_conf:
+#  nameservers: [ 127.0.0.1 ]
+#  domain: local
+#  searchdomains: [ local ]
+#
 manage_resolv_conf: false
 
 ## resize_rootfs should the / filesytem be resized on first boot
@@ -121,7 +121,6 @@ package_update: false
 #
 package_upgrade: false
 
-
 ## manual cache clean.
 #  By default, the link from /var/lib/cloud/instance to
 #  the specific instance in /var/lib/cloud/instances/ is removed on every
@@ -130,7 +129,7 @@ package_upgrade: false
 #  this option to 'True', and maintain (remove) that link before the image
 #  will be booted as a new instance.
 # default is False
-manual_cache_clean: False
+#manual_cache_clean: False
 
 ## When cloud-init is finished running including having run 
 # cloud_init_modules, then it will run this command.  The default
