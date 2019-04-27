@@ -51,7 +51,9 @@ check program ${LABEL}fs-status with path "/bin/btrfs-check -m ${VOLUME}"
 EOF
 
 # Systemd
-install -m 644 -g root -o root rpi-btrfs/systemd/*.service "${ROOTFS_DIR}/lib/systemd/system/${LABEL}@.service"
+install -m 644 -g root -o root rpi-btrfs/systemd/volume-data@.service "${ROOTFS_DIR}/lib/systemd/system/${LABEL}@.service"
+install -m 644 -g root -o root rpi-btrfs/systemd/btrfs-raid.target ${ROOTFS_DIR}/lib/systemd/system/
+install -m 644 -g root -o root rpi-btrfs/systemd/btrfs-rebalance@.service "${ROOTFS_DIR}/lib/systemd/system/btrfs-rebalance@${LABEL}.service"
 
 # udev rules
 install -m 644 -g root -o root rpi-btrfs/udev/* ${ROOTFS_DIR}/etc/udev/rules.d/
