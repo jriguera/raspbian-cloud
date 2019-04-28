@@ -459,7 +459,7 @@ utf8_ssid=1
 # This can limit available channels and transmit power.
 # These two octets are used as the first two octets of the Country String
 # (dot11CountryString)
-{{ if .Data.hostapd.country }}country_code={{ .Data.hostapd.country }}{{ else }}country_code=NL{{ end }}
+{{ if .Data.hostapd.country }}country_code={{.Data.hostapd.country }}{{ else }}{{ if .Data.system.country }}country_code={{.Data.system.country }}{{ end }}{{ end }}
 
 
 ##### IEEE 802.11n related configuration ######################################

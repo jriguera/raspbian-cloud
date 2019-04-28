@@ -41,6 +41,11 @@ dhcp-option=tag:{{ $key }},option:router,{{ .Data.dhcp.gw }}
 {{ if .Data.dhcp.domain }}
 # Set default domain
 dhcp-option=tag:{{ $key }},option:domain-name,{{ .Data.dhcp.domain }}
+{{ else }}
+{{ if .Data.system.domain }}
+# Set default domain
+dhcp-option=tag:{{ $key }},option:domain-name,{{ .Data.system.domain }}
+{{ end }}
 {{ end }}
 
 # (IPv4 only) Generate a name for DHCP clients which do not otherwise have one, 
