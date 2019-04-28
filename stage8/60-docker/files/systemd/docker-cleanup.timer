@@ -5,7 +5,7 @@ After=docker.service
 ConditionFileIsExecutable=/usr/bin/docker
 
 [Timer]
-OnCalendar=*-*-* 12:00:00
+OnCalendar=*-*-* 12:45:00
 OnBootSec=30min
 
 [Install]
