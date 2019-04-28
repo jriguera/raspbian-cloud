@@ -74,6 +74,10 @@ interface {{ $key }}
 {{ end -}}
 {{ if $value.forward }}script /etc/hostapd/forwarding-{{ $value.forward }}.sh
 {{ end -}}
-    {{ end }}                                                                                                                                         
-  {{ end }}                                                                                                                                           
-{{ end }}                                                                                                                                             
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+
+{{ if .Data.system.forceresolvconf }}nohook resolv.conf {{ end }}
+

@@ -2,6 +2,7 @@
 # https://gist.github.com/kimus/9315140
 
 system:
+  forceresolvconf: false
   domain: 'local'
   hostname: raspi
   country: NL
@@ -58,6 +59,9 @@ docker:
   compose:
     name: system
     image: "jriguera/dockercompose"
+    env:
+      MYSQL_HOST: 'db.internal'
+      MYSQL_ROOT_PASSWORD: 'root'
 
 avahi:
   ifaces: eth0
