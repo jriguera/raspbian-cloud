@@ -9,7 +9,8 @@ services:
       description: "Portainer: Web interface to manage docker containers"
       system: true
     volumes:
-    - /data/docker/portainer:/data
+    - /data/portainer/data:/data
+    - /data/portainer/rpi-apps.json:/templates.json
     - /var/run/docker.sock:/var/run/docker.sock
     ports:
     - "9000:9000"

@@ -1,0 +1,110 @@
+[
+  {
+    "type": 1,
+    "title": "rpi-homeassistant",
+    "description": "Home Assistant",
+    "logo": "https://raw.githubusercontent.com/jriguera/rpi-portainer/master/images/ha-icon.png",
+    "image": "jriguera/rpi-homeassistant:latest",
+    "platform": "linux",
+    "note": "Docker image created from https://github.com/jriguera/docker-rpi-homeassistant",
+    "categories": ["ha", "zwave", "iot"],
+    "restart_policy": "unless-stopped",
+    "labels": [
+      { "name": "type", "value": "web" },
+      { "name": "proto", "value": "http" },
+      { "name": "name", "value": "homeassistant" }
+    ],
+    "ports": [  
+      "8123/tcp"
+    ],
+    "volumes": [
+      {"container": "/config", "bind": "/data/ha/config" }
+    ],
+    "env": []
+  },
+  {
+    "type": 1,
+    "title": "rpi-mariadb",
+    "description": "An Enhanced drop in replacement for Mysql",
+    "logo": "https://raw.githubusercontent.com/jriguera/rpi-portainer/master/images/mariadb-icon.png",
+    "image": "jriguera/mariadb:latest",
+    "platform": "linux",
+    "note": "Docker image created from https://github.com/jriguera/docker-rpi-mariadb",
+    "categories": ["sql", "database", "mysql"],
+    "restart_policy": "unless-stopped",
+    "labels": [
+      { "name": "type", "value": "database" },
+      { "name": "proto", "value": "sql" },
+      { "name": "name", "value": "mariadb" }
+    ],
+    "ports": [  
+      "3306/tcp"
+    ],
+    "volumes": [
+      {"container": "/var/lib/mysql", "bind": "/data/mariadb" }
+    ],
+    "env": [
+      {
+        "name":"MYSQL_ROOT_PASSWORD",
+        "label": "Root password",
+        "description": "Password used by the root user. If not set, it will be automatically created",
+        "set": ""
+      },
+      {
+        "name":"MYSQL_DATABASE",
+        "label":"Database name",
+        "description": "Name of the dabatase"
+      },
+      {
+        "name":"MYSQL_USER",
+        "label":"Database user name",
+        "description": "Name of the dabatase user for connection string"
+      },
+      {
+        "name":"MYSQL_PASSWORD",
+        "label":"Database user password",
+        "description": "Password of the dabatase user for connection string"
+      }
+    ]
+  },
+  {
+    "type": 1,
+    "title": "rpi-mosquitto",
+    "description": "Mosquitto is a message broker that implements the MQTT protocol",
+    "logo": "https://raw.githubusercontent.com/jriguera/rpi-portainer/master/images/mosquitto-icon.png",
+    "image": "jriguera/mosquitto:latest",
+    "platform": "linux",
+    "note": "Docker image created from https://github.com/jriguera/docker-rpi-mosquitto",
+    "categories": ["mqtt", "mosquitto"],
+    "restart_policy": "unless-stopped",
+    "labels": [
+      { "name": "type", "value": "middleware" },
+      { "name": "proto", "value": "mqtt" },
+      { "name": "name", "value": "mosquitto" }
+    ],
+    "ports": [  
+      "1883/tcp"
+    ],
+    "volumes": [
+      {"container": "/mqtt", "bind": "/data/mosquitto/mqtt" }
+    ],
+    "env": [
+      {
+        "name":"MQTT_PERSISTENCE",
+        "label": "MQTT Persistence",
+        "description": "Enable persistence on disk",
+        "set": "true"
+      },
+      {
+        "name":"MQTT_USER",
+        "label":"User name",
+        "description": "Name of the user for connection string"
+      },
+      {
+        "name":"MQTT_PASSWORD",
+        "label":"User password",
+        "description": "Password of the user for connection string"
+      }
+    ]
+  }
+]
