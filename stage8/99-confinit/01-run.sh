@@ -13,7 +13,7 @@ BOOT_CONFIG_FOLDER=${BOOT_CONFIG_FOLDER##+(/)}
 # copy configuration
 cp -av config ${ROOTFS_DIR}/boot
 
-# Install and enable Prometheus node_exporter
+# Install and enable confinit
 on_chroot <<EOF
 curl -sSL  https://github.com/jriguera/confinit/releases/download/v${VERSION}/confinit-${VERSION}-linux-${ARCH} -o /bin/confinit
 chmod a+x /bin/confinit
