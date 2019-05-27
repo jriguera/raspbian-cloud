@@ -5,15 +5,13 @@ system:
   forceresolvconf: false
   domain: 'local'
   hostname: raspi
-  country: NL
+  country: ES
   timezone: 'Europe/Amsterdam'
   lang: 'en_GB.UTF-8'
-  dns:
-  - 127.0.0.1
   user:
     name: 'pi'
     email: 'hola@gmail.com'
-    password: 'hola'
+    password: 'raspberry'
   monit:
     users:
       monit: 'admin'
@@ -43,11 +41,11 @@ networking:
        - 127.0.0.1
        - 1.1.1.1
        - 8.8.8.8
-  wlan0:
-    profile: 'static'
-    ip: 10.1.1.1/24
-    forward: 'eth0'
-    nolink: true
+# wlan0:
+#   profile: 'static'
+#   ip: 10.1.1.1/24
+#   forward: 'eth0'
+#   nolink: true
 
 ### condition services
 
@@ -55,7 +53,10 @@ node_exporter: true
 
 sshd: true
 
+## see docker-compose folder for the services
 docker:
+  portainer:
+    apps: https://github.com/jriguera/docker-portainer/raw/master/rpi/apps.json
   compose:
     name: system
     image: "jriguera/dockercompose"

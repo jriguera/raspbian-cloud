@@ -1,9 +1,9 @@
 [
   {
     "type": 1,
-    "title": "rpi-homeassistant",
+    "title": "homeassistant",
     "description": "Home Assistant",
-    "logo": "https://raw.githubusercontent.com/jriguera/rpi-portainer/master/images/ha-icon.png",
+    "logo": "https://raw.githubusercontent.com/jriguera/docker-portainer/master/rpi/images/ha.png",
     "image": "jriguera/rpi-homeassistant:latest",
     "platform": "linux",
     "note": "Docker image created from https://github.com/jriguera/docker-rpi-homeassistant",
@@ -18,15 +18,15 @@
       "8123/tcp"
     ],
     "volumes": [
-      {"container": "/config", "bind": "/data/ha/config" }
+      {"container": "/config", "bind": "/data/ha/config"}
     ],
     "env": []
   },
   {
     "type": 1,
-    "title": "rpi-mariadb",
+    "title": "mariadb",
     "description": "An Enhanced drop in replacement for Mysql",
-    "logo": "https://raw.githubusercontent.com/jriguera/rpi-portainer/master/images/mariadb-icon.png",
+    "logo": "https://raw.githubusercontent.com/jriguera/docker-portainer/master/rpi/images/mariadb.png",
     "image": "jriguera/mariadb:latest",
     "platform": "linux",
     "note": "Docker image created from https://github.com/jriguera/docker-rpi-mariadb",
@@ -41,7 +41,7 @@
       "3306/tcp"
     ],
     "volumes": [
-      {"container": "/var/lib/mysql", "bind": "/data/mariadb" }
+      {"container": "/var/lib/mysql", "bind": "/data/mariadb/data"}
     ],
     "env": [
       {
@@ -69,9 +69,9 @@
   },
   {
     "type": 1,
-    "title": "rpi-mosquitto",
+    "title": "mosquitto",
     "description": "Mosquitto is a message broker that implements the MQTT protocol",
-    "logo": "https://raw.githubusercontent.com/jriguera/rpi-portainer/master/images/mosquitto-icon.png",
+    "logo": "https://raw.githubusercontent.com/jriguera/docker-portainer/master/rpi/images/mosquitto.png",
     "image": "jriguera/mosquitto:latest",
     "platform": "linux",
     "note": "Docker image created from https://github.com/jriguera/docker-rpi-mosquitto",
@@ -86,7 +86,7 @@
       "1883/tcp"
     ],
     "volumes": [
-      {"container": "/mqtt", "bind": "/data/mosquitto/mqtt" }
+      {"container": "/mqtt", "bind": "/data/mosquitto/data"}
     ],
     "env": [
       {
@@ -106,5 +106,31 @@
         "description": "Password of the user for connection string"
       }
     ]
+  },
+  {
+    "type": 1,
+    "title": "traefik",
+    "description": "Traefik is a modern HTTP reverse proxy and load balancer that makes deploying microservices easy",
+    "logo": "https://raw.githubusercontent.com/jriguera/docker-portainer/master/rpi/images/traefik.png",
+    "image": "jriguera/traefik:latest",
+    "platform": "linux",
+    "note": "Docker image created from https://github.com/jriguera/docker-rpi-traefik",
+    "categories": ["http", "router", "traefik"],
+    "restart_policy": "unless-stopped",
+    "labels": [
+      { "name": "type", "value": "router" },
+      { "name": "proto", "value": "http" },
+      { "name": "name", "value": "traefik" }
+    ],
+    "ports": [  
+      "80/tcp",
+      "443/tcp",
+      "8080/tcp"
+    ],
+    "volumes": [
+      {"container": "/var/run/docker.sock", "bind": "/var/run/docker.sock"},
+      {"container": "/etc/traefik", "bind": "/data/traefik/config"}
+    ],
+    "env": []
   }
 ]
