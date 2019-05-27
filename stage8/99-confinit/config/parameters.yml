@@ -3,6 +3,7 @@
 
 system:
   forceresolvconf: false
+  forceipv4: true
   domain: 'local'
   hostname: raspi
   country: ES
