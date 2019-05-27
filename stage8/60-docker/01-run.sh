@@ -3,8 +3,11 @@
 # Install and enable docker
 on_chroot <<EOF
 export VERSION="18.06.3"
-curl -sSL https://get.docker.com/ | sh
+curl -fsSL get.docker.com -o /tmp/get-docker.sh
+chmod a+x /tmp/get-docker.sh
+/tmp/get-docker.sh
 usermod -aG docker pi
+rm -f /tmp/get-docker.sh
 EOF
 
 install -m 644 -g root -o root files/default ${ROOTFS_DIR}/etc/default/docker
