@@ -10,7 +10,7 @@ services:
       system: true
     volumes:
     - /data/portainer/data:/data
-    - /data/portainer/apps.json:/templates.json
+    - /etc/portainer/apps.json:/templates.json
     - /var/run/docker.sock:/var/run/docker.sock
     ports:
     - "9000:9000"
