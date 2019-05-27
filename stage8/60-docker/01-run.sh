@@ -2,6 +2,7 @@
 
 # Install and enable docker
 on_chroot <<EOF
+export VERSION="18.06.3"
 curl -sSL https://get.docker.com/ | sh
 usermod -aG docker pi
 EOF
@@ -14,7 +15,6 @@ install -m 644 -g root -o root files/systemd/docker.conf ${ROOTFS_DIR}/etc/syste
 on_chroot <<EOF
 systemctl enable docker
 EOF
-
 
 # Docker cleanup
 install -m 644 -g root -o root files/systemd/docker-cleanup.timer ${ROOTFS_DIR}/lib/systemd/system
