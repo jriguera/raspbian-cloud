@@ -28,8 +28,8 @@ rm -f /tmp/requirements.txt
 EOF
 
 # Monit
-install -m 775 -g root -o root -d ${ROOTFS_DIR}/etc/monit/conf.d
-cat <<EOF >"${ROOTFS_DIR}/etc/monit/conf.d/${LABEL}fs"
+install -m 775 -g root -o root -d ${ROOTFS_DIR}/etc/monit/conf-available/
+cat <<EOF >"${ROOTFS_DIR}/etc/monit/conf-available/${LABEL}fs"
 ## Check filesystem permissions, uid, gid, space and inode usage. Other services,
 ## such as databases, may depend on this resource and an automatically graceful
 ## stop may be cascaded to them before the filesystem will become full and data
