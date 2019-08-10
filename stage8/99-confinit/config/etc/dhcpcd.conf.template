@@ -35,10 +35,10 @@ require dhcp_server_identifier
 slaac private
 
 # Ignore docker interfaces
-denyinterfaces docker*
-
+denyinterfaces docker* veth* br-*
 
 # Generated configuration
+{{ if .Data.system.forceresolvconf }}nohook resolv.conf {{ end }}
 {{ range $key, $value := .Data.networking }}
   {{ if $value.profile }}
     {{ with eq $value.profile "dhcp" }}
@@ -77,7 +77,4 @@ interface {{ $key }}
     {{ end }}
   {{ end }}
 {{ end }}
-
-
-{{ if .Data.system.forceresolvconf }}nohook resolv.conf {{ end }}
 

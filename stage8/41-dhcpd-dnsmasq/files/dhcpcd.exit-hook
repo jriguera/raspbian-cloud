@@ -1,0 +1,37 @@
+#!/bin/sh
+
+# https://www.daemon-systems.org/man/dhcpcd-run-hooks.8.html
+# https://linux.die.net/man/8/dhclient-script
+# http://www.thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html
+
+# Generate equivalent dnsmasq /etc/resolv.conf
+RESOLVCONF_DNSMASQ=/etc/resolv.dhcp.conf
+
+set_dns() {
+    if test -z "${new_domain_name_servers}"
+    then
+        return 0
+    fi
+    echo "# Generated at $(date) for interface ${interface} by $0" > $RESOLVCONF_DNSMASQ
+    for dnsaddr in ${new_domain_name_servers}
+    do
+        echo "nameserver ${dnsaddr}" >> $RESOLVCONF_DNSMASQ
+    done
+}
+
+unset_dns() {
+    echo > $RESOLVCONF_DNSMASQ
+}
+
+if test "x${if_up}" = "xtrue"
+then
+  case "${reason}" in
+    BOUND6|RENEW6|REBIND6|REBOOT6|INFORM6)
+        new_domain_name_servers="$new_dhcp6_name_servers"
+        set_dns
+    ;;
+    BOUND|RENEW|REBIND|REBOOT)
+        set_dns
+    ;;
+  esac
+fi
