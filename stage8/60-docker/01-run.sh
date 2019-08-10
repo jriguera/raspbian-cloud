@@ -1,11 +1,21 @@
 #!/bin/bash -e
 
+VERSION='5:18.09.8~3-0~debian-buster'
+
 # Install and enable docker
 on_chroot <<EOF
-export VERSION="18.06.3"
-curl -sSL https://get.docker.com/ | sh
-usermod -aG docker pi
+# 1. Official method
+#curl -sSL https://get.docker.com/ | sh
+#echo "deb [arch=armhf] https://download.docker.com/linux/raspbian stretch stable" >  /etc/apt/sources.list.d/docker.list
+# 2. Alternative
+curl -fsSL "https://download.docker.com/linux/debian/gpg" | apt-key add -qq - >/dev/null
+echo "deb [arch=armhf] https://download.docker.com/linux/debian buster stable" > /etc/apt/sources.list.d/docker-ce.list
+echo "deb-src https://download.docker.com/linux/debian buster stable" >> /etc/apt/sources.list.d/docker-ce.list
+apt-get update -qq
+apt-get install --no-install-recommends -y docker-ce-cli="${VERSION}"
+apt-get install --no-install-recommends -y docker-ce="${VERSION}"
 apt-mark hold docker-ce docker-ce-cli
+usermod -aG docker pi
 EOF
 
 install -m 644 -g root -o root files/default ${ROOTFS_DIR}/etc/default/docker
