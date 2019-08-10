@@ -9,6 +9,11 @@ install -m 644 -g root -o root files/systemd/override.conf ${ROOTFS_DIR}/etc/sys
 
 # Enable ssh
 on_chroot << EOF
+# Tweak sshd to prevent DNS resolution (speed up logins)
+sed -i -e 's/^#UseDNS.*/UseDNS no/' /etc/ssh/sshd_config
+sed -i -e 's/^#TCPKeepAlive.*/TCPKeepAlive yes/' /etc/ssh/sshd_config
+sed -i -e 's/^#Compression.*/Compression delayed/' /etc/ssh/sshd_config
+
 systemctl enable ssh
 EOF
 
