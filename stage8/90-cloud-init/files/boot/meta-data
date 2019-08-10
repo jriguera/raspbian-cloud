@@ -1,2 +1,4 @@
 instance-id: raspberrypi
 local-hostname: raspberrypi
+network-config:
+  config: disabled
