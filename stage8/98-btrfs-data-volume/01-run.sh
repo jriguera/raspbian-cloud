@@ -19,13 +19,13 @@ DATA_SUBVOL=${BACKUP_SUBVOL##+(/)}
 
 # Copy binary
 install -m 755 -g root -o root rpi-btrfs/bin/* ${ROOTFS_DIR}/bin
-install -m 755 -g root -o root rpi-btrfs/requirements.txt ${ROOTFS_DIR}/tmp
+#install -m 755 -g root -o root rpi-btrfs/requirements.txt ${ROOTFS_DIR}/tmp
 
 ## Install requiremets
-on_chroot <<EOF
-pip3 install -r /tmp/requirements.txt
-rm -f /tmp/requirements.txt
-EOF
+#on_chroot <<EOF
+#pip3 install -r /tmp/requirements.txt
+#rm -f /tmp/requirements.txt
+#EOF
 
 # Monit
 install -m 775 -g root -o root -d ${ROOTFS_DIR}/etc/monit/conf-available/
