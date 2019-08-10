@@ -13,8 +13,8 @@ the fat32 boot partition. More information: https://cloudinit.readthedocs.io/en/
 ## Features
 
 1. Automatic provisioning at boot (via confinit and/or cloud-init)
-   * Confinit, based on yaml and template rendering at boot time: https://github.com/jriguera/confinit
-   * Cloud-init: https://cloudinit.readthedocs.io/en/latest/
+  * Confinit, based on yaml and template rendering at boot time: https://github.com/jriguera/confinit
+  * Cloud-init: https://cloudinit.readthedocs.io/en/latest/
 2. Core services pre-configured: Rng-tool, Docker, Dnsmasq, Prometheus node exporter, Opensmtpd, OpenSSH, Hostapd, Monit
 3. Dnsmasq primarily for dns caching and control, optionally DHCP server for Hostapd (wifi)
 4. Opensmtpd pre-setup for external smarthost and local mail delivery
@@ -22,24 +22,24 @@ the fat32 boot partition. More information: https://cloudinit.readthedocs.io/en/
 6. Hostapd for automatic WIFI AP.
 7. Monit to manage core services, monitor and alert with PAM support listening on port 2812
 8. Data persistence on btrfs `/data` mountpoint with RAID 1 support. Automatically monitoring, setup and repair
-   * RAID Montioring and automatic repair.
-   * Automatic RAID creation/rebalance at boot time if 2 devices are provided.
+  * RAID Montioring and automatic repair.
+  * Automatic RAID creation/rebalance at boot time if 2 devices are provided.
 9. Automatic backups of `/data` mountpoint to S3, GCS, Google Drive, ...
-   * Using BetterClone: https://github.com/jriguera/betterclone
-   * Based on rclone: https://rclone.org/
-   * Btrfs snapshots before rclone backup.
-   * Automatic backup and snapshot management: how many backups/snapshots to keep in local and remotely.
-   * Automatic restore from remote at boot time.
+  * Using BetterClone: https://github.com/jriguera/betterclone
+  * Based on rclone: https://rclone.org/
+  * Btrfs snapshots before rclone backup.
+  * Automatic backup and snapshot management: how many backups/snapshots to keep in local and remotely.
+  * Automatic restore from remote at boot time.
 10. Pure systemd configuration, no sys-v-init folders and services, functionally moved to
    systemd equivalent services
-   * systemd-cron instead of cron
-   * systemd-watchdog
-   * systemd-timesyncd instead of ntpd
-   * journal logging instead of rsyslog
+  * systemd-cron instead of cron
+  * systemd-watchdog
+  * systemd-timesyncd instead of ntpd
+  * journal logging instead of rsyslog
 11. Docker and docker-compose setup
-   * Automatic refesh/cleanup of images
-   * Volumes on `/data` partition for backups and reliable storage
-   * Portainer automatically deployed by default: https://www.portainer.io/
+  * Automatic refesh/cleanup of images
+  * Volumes on `/data` partition for backups and reliable storage
+  * Portainer automatically deployed by default: https://www.portainer.io/
 12. Useful tools like gotop and lazydocker
 
 
