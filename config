@@ -14,4 +14,8 @@ then
 fi
 
 # Generic
+export DEBIAN_FRONTEND=noninteractive
+
+export LANGUAGE=C
+export LANG=C
 export LC_ALL=C
