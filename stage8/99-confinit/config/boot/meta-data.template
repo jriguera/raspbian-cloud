@@ -1,0 +1,4 @@
+instance-id: {{ .Data.system.hostname }}
+local-hostname: {{ .Data.system.hostname }}
+network-config:
+  config: disabled

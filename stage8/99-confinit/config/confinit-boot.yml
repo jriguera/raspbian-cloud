@@ -4,6 +4,7 @@ datafile: /boot/config/parameters.yml
 
 # Destinations
 etc: &etc /etc
+boot: &boot /boot
 data: &data /data
 local: &local /usr/local
 
@@ -33,24 +34,15 @@ process:
     regex: '.*\.template'
   - destination: *etc
     template: false
-- source: /boot/config/data
+- source: /boot/config/boot
   operations:
-  - destination: *data
+  - destination: *boot
     regex: '.*\.template'
-  - destination: *data
+  - destination: *boot
     template: false
-- source: /boot/config/local
+- source: /boot/config/scripts/boot
   operations:
-  - destination: *local
-    template: false
-    permissions:
-    - mode: "0755"
-      glob: '*/bin/*'
-    - mode: "0755"
-      glob: '*/sbin/*'
-- source: /boot/config/scripts
-  operations:
-  - destination: /tmp/run
+  - destination: /tmp/confinit
     template: true
     delextension: false
     default:
@@ -59,6 +51,4 @@ process:
     command:
       cmd: ["{{.Destination}}"]
 
-finish:
-  cmd: ["rm", "-rf", "/tmp/run"]
 

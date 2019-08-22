@@ -20,11 +20,14 @@ chmod a+x /bin/confinit
 EOF
 
 # systemd units
-install -m 644 -g root -o root confinit/systemd/confinit@.service ${ROOTFS_DIR}/lib/systemd/system
+install -m 644 -g root -o root confinit/systemd/confinit-boot@.service ${ROOTFS_DIR}/lib/systemd/system
+install -m 644 -g root -o root confinit/systemd/confinit-final@.service ${ROOTFS_DIR}/lib/systemd/system
 
 on_chroot <<EOF
 # Enable service
-mv "/lib/systemd/system/confinit@.service" "/lib/systemd/system/confinit@`systemd-escape --path ${BOOT_CONFIG_FOLDER}`.service"
-systemctl enable "confinit@`systemd-escape --path ${BOOT_CONFIG_FOLDER}`.service"
+mv "/lib/systemd/system/confinit-boot@.service" "/lib/systemd/system/confinit-boot@`systemd-escape --path ${BOOT_CONFIG_FOLDER}`.service"
+mv "/lib/systemd/system/confinit-final@.service" "/lib/systemd/system/confinit-final@`systemd-escape --path ${BOOT_CONFIG_FOLDER}`.service"
+systemctl enable "confinit-boot@`systemd-escape --path ${BOOT_CONFIG_FOLDER}`.service"
+systemctl enable "confinit-final@`systemd-escape --path ${BOOT_CONFIG_FOLDER}`.service"
 mkdir -p /${BOOT_CONFIG_FOLDER}
 EOF

@@ -1,4 +1,6 @@
 {
+  "max-concurrent-uploads": 1,
+  "max-concurrent-downloads": 2,
   "labels": [ "os=linux", "arch=arm64" ],
   "experimental": false,
   "storage-driver": "overlay2",

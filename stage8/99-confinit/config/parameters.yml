@@ -6,9 +6,11 @@ system:
   forceipv4: true
   domain: 'local'
   hostname: raspi
+# dns: [ '1.1.1.1' ]
   country: ES
   timezone: 'Europe/Amsterdam'
   lang: 'en_GB.UTF-8'
+# watchdog: 10s
   user:
     name: 'pi'
     email: 'hola@gmail.com'
@@ -39,7 +41,6 @@ networking:
        ip: '192.168.1.10/24'
        gw: '192.168.1.1'
        dns:
-       - 127.0.0.1
        - 1.1.1.1
        - 8.8.8.8
 # wlan0:
@@ -91,8 +92,8 @@ avahi:
 #      weekly: 4
 #      monthly: 6
 #    rclone:
-#      destination: /backups/raspi/data
 #      id: GDrive
+#      destination: /backups/raspi/data
 #      conf: |
 #        type = drive
 #        scope = drive
