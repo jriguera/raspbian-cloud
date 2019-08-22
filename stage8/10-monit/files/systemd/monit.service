@@ -2,7 +2,7 @@
 Description=Pro-active monitoring utility for unix systems
 Wants=network.target multi-user.target cloud-init.target
 After=network.target multi-user.target cloud-init.target
-ConditionPathExists=!/etc/monit/monit_not_to_be_run
+ConditionPathExists=!/etc/monit-stopped
 
 [Service]
 EnvironmentFile=-/etc/default/monit
@@ -12,9 +12,7 @@ ExecStop=/usr/bin/monit quit
 ExecReload=/usr/bin/monit reload
 KillMode=process
 Restart=on-failure
-RestartPreventExitStatus=255
 Type=simple
 
 [Install]
 WantedBy=multi-user.target
-
