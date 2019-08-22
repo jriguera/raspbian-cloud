@@ -13,7 +13,7 @@ on_chroot << EOF
 sed -i -e 's/^#UseDNS.*/UseDNS no/' /etc/ssh/sshd_config
 sed -i -e 's/^#TCPKeepAlive.*/TCPKeepAlive yes/' /etc/ssh/sshd_config
 sed -i -e 's/^#Compression.*/Compression delayed/' /etc/ssh/sshd_config
-
+sed -i -e 's/^#MaxStartups.*/MaxStartups 5:50:10/' /etc/ssh/sshd_config
 systemctl enable ssh
 EOF
 
