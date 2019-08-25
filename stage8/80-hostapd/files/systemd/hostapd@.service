@@ -1,8 +1,7 @@
 [Unit]
 Description=Hostapd IEEE 802.11 AP, IEEE 802.1X/WPA/WPA2/EAP/RADIUS Authenticator (interface-specific version)
-Requires=network.target
-After=network.target
-Before=wpa_supplicant.service wpa_supplicant@%i.service
+Wants=network.target
+Before=network.target wpa_supplicant.service wpa_supplicant@%i.service
 Conflicts=wpa_supplicant.service wpa_supplicant@%i.service
 ConditionPathExists=/etc/hostapd/hostapd.%I.conf
 ConditionFileIsExecutable=/usr/sbin/hostapd
