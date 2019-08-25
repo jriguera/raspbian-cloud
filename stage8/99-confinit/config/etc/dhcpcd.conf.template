@@ -37,6 +37,9 @@ slaac private
 # Ignore docker interfaces
 denyinterfaces docker* veth* br-*
 
+# Time out after seconds, instead of the default 30
+timeout 60
+
 # Generated configuration
 {{ if .Data.system.forceresolvconf }}nohook resolv.conf {{ end }}
 {{ range $key, $value := .Data.networking }}
