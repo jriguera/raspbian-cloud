@@ -6,6 +6,34 @@
 
 # Generate equivalent dnsmasq /etc/resolv.conf
 RESOLVCONF_DNSMASQ=/etc/resolv.dhcp.conf
+TIMESYNCD_CONF=/run/systemd/timesyncd.conf.d/01-dhclient.conf
+
+unset_timesyncd() {
+    if test -e $TIMESYNCD_CONF
+    then
+        rm -f $TIMESYNCD_CONF
+        systemctl try-restart systemd-timesyncd.service || true
+    fi
+}
+
+set_timesyncd() {
+    if test -z "${new_ntp_servers}"
+    then
+        mkdir -p $(dirname $TIMESYNCD_CONF)
+        cat <<EOF > ${TIMESYNCD_CONF}.new
+# NTP server entries received from DHCP server
+[Time]
+NTP=$new_ntp_servers
+EOF
+        if ! diff ${TIMESYNCD_CONF}.new ${TIMESYNCD_CONF} > /dev/null 2>&1
+        then
+            unset_timesyncd
+            mv ${TIMESYNCD_CONF}.new ${TIMESYNCD_CONF}
+            systemctl try-restart systemd-timesyncd.service || true
+        fi
+    fi
+}
+
 
 set_dns() {
     if test -z "${new_domain_name_servers}"
@@ -33,9 +61,17 @@ then
     BOUND6|RENEW6|REBIND6|REBOOT6|INFORM6)
         new_domain_name_servers="$new_dhcp6_name_servers"
         set_dns
+        set_timesyncd
     ;;
     BOUND|RENEW|REBIND|REBOOT)
         set_dns
+        set_timesyncd
+    ;;
+    EXPIRE|FAIL|RELEASE|STOP)
+        unset_dns
+        unset_timesyncd
     ;;
   esac
 fi
+
+
