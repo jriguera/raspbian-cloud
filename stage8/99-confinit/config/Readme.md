@@ -1,3 +1,5 @@
+# Raspbian-cloud Parameters
+
 Please define the configuration settings for the Raspberry Pi in the
 file `parameters.yml`. Those values will be used in the templates to
 render the configuration files for each service.
@@ -10,3 +12,10 @@ are two processing units:
 2. At the end of the startup process, before docker-compose
 
 Each unit has its own configuration file.
+
+
+# Docker-compose
+
+You can define the services to run at startup via `docker-compose.yml`
+By default, only Portainer is defined, so you can use it
+to manage your own containers.

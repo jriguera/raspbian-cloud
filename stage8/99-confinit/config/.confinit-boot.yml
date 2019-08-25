@@ -2,44 +2,46 @@ logoutput: split
 loglevel: debug
 datafile: /boot/config/parameters.yml
 
-# Destinations
-etc: &etc /etc
-boot: &boot /boot
-data: &data /data
-local: &local /usr/local
-
 process:
 - source: /boot/config/etc
   operations:
-  - destination: *etc
+  - destination: /etc
     regex: '.*/default/.*\.template'
-  - destination: *etc
+  - destination: /etc
     regex: '.*avahi.*'
     rendercondition: '{{if not .Data.avahi}}Avahi configuration not defined {{end}}'
-  - destination: *etc
+  - destination: /etc
     regex: '.*hostapd.*'
     rendercondition: '{{if not .Data.hostapd}}No Wifi Access Point defined {{end}}'
     permissions:
     - mode: "0640"
       glob: '*/hostapd.conf'
-  - destination: *etc
+  - destination: /etc
     regex: '.*bluetooth.*'
     rendercondition: '{{if not .Data.bluetooth}}Bluetooth disabled{{end}}'
-  - destination: *etc
+  - destination: /etc
     regex: '.*wpa_supplicant.*'
     permissions:
     - mode: "0640"
       glob: '*/wpa_supplicant.conf'
-  - destination: *etc
+  - destination: /etc
     regex: '.*\.template'
-  - destination: *etc
+  - destination: /etc
     template: false
+
 - source: /boot/config/boot
   operations:
-  - destination: *boot
+  - destination: /boot
     regex: '.*\.template'
-  - destination: *boot
+  - destination: /boot
     template: false
+
+- source: /boot/config
+  operations:
+  - destination: /etc/docker-compose
+    regex: 'docker-compose\.yml'
+    template: false
+
 - source: /boot/config/scripts/boot
   operations:
   - destination: /tmp/confinit
@@ -50,5 +52,4 @@ process:
         file: "0755"
     command:
       cmd: ["{{.Destination}}"]
-
 

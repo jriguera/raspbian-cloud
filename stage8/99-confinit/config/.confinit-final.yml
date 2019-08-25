@@ -2,28 +2,24 @@ logoutput: split
 loglevel: debug
 datafile: /boot/config/parameters.yml
 
-# Destinations
-etc: &etc /etc
-boot: &boot /boot
-data: &data /data
-local: &local /usr/local
-
 process:
 - source: /boot/config/data
   operations:
-  - destination: *data
+  - destination: /data
     regex: '.*\.template'
-  - destination: *data
+  - destination: /data
     template: false
+
 - source: /boot/config/local
   operations:
-  - destination: *local
+  - destination: /usr/local
     template: false
     permissions:
     - mode: "0755"
       glob: '*/bin/*'
     - mode: "0755"
       glob: '*/sbin/*'
+
 - source: /boot/config/scripts/final
   operations:
   - destination: /tmp/confinit
