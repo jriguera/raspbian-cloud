@@ -2,7 +2,7 @@
 
 on_chroot << EOF
 apt-get -y purge \
-  python python-minimal python2 python2-minimal python2.7 python2.7-minimal libpython2.7-minimal \
+  python-rpi.gpio \
   libfreetype6-dev libmnl-dev libraspberrypi-dev \
   apt-transport-https \
   xauth xdg-user-dirs \
@@ -14,6 +14,8 @@ apt-get -y purge \
   pv \
   javascript-common \
   gdb
+# Cleanup
+apt-get -y autoremove
 EOF
 
 rm -rf "${ROOTFS_DIR}/etc/cifs-utils"
