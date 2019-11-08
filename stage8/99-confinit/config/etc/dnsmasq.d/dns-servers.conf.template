@@ -24,7 +24,7 @@ no-resolv
 {{ else }}
 # Change this line if you want dns to get its upstream servers from
 # somewhere other that /etc/resolv.conf
-resolv-file=/etc/resolv.conf.dnsmasq
+resolv-file=/etc/resolv.dhcp.conf
 
 # By  default,  dnsmasq  will  send queries to any of the upstream
 # servers it knows about and tries to favour servers to are  known
