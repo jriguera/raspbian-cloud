@@ -14,3 +14,5 @@ cgroup-tools
 ctop
 iftop
 nmon
+bmon
+tcptrack
