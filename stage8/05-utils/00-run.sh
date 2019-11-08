@@ -1,9 +1,9 @@
 #!/bin/bash -e
 
-VERSION="0.6.4"
+VERSION="0.7.4"
 ARCH="armv6"
 
-# Install and enable Prometheus node_exporter
+# Install lazydocker
 on_chroot <<EOF
 curl -sSL  https://github.com/jesseduffield/lazydocker/releases/download/v${VERSION}/lazydocker_${VERSION}_Linux_${ARCH}.tar.gz -o /tmp/lazydocker.tar.gz
 tar -xvf /tmp/lazydocker.tar.gz -C /usr/sbin/ --wildcards --no-anchored lazydocker
