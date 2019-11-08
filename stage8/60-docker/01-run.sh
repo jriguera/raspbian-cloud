@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
 VERSION='5:18.09.8~3-0~debian-buster'
+VERSION='5:19.03.4~3-0~raspbian-buster'
 
 # Install and enable docker
 on_chroot <<EOF
@@ -8,9 +9,9 @@ on_chroot <<EOF
 #curl -sSL https://get.docker.com/ | sh
 #echo "deb [arch=armhf] https://download.docker.com/linux/raspbian stretch stable" >  /etc/apt/sources.list.d/docker.list
 # 2. Alternative
-curl -fsSL "https://download.docker.com/linux/debian/gpg" | apt-key add -qq - >/dev/null
-echo "deb [arch=armhf] https://download.docker.com/linux/debian buster stable" > /etc/apt/sources.list.d/docker-ce.list
-echo "deb-src https://download.docker.com/linux/debian buster stable" >> /etc/apt/sources.list.d/docker-ce.list
+curl -fsSL "https://download.docker.com/linux/raspbian/gpg" | apt-key add -qq - >/dev/null
+echo "deb [arch=armhf] https://download.docker.com/linux/raspbian buster stable" > /etc/apt/sources.list.d/docker-ce.list
+echo "deb-src https://download.docker.com/linux/raspbian buster stable" >> /etc/apt/sources.list.d/docker-ce.list
 apt-get update -qq
 apt-get install --no-install-recommends -y docker-ce-cli="${VERSION}"
 apt-get install --no-install-recommends -y docker-ce="${VERSION}"
