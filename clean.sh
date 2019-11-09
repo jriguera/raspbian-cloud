@@ -1,8 +1,6 @@
 #!/bin/bash
 
-umount work/*-RaspbianCloud/stage*/rootfs/sys
-umount work/*-RaspbianCloud/stage*/rootfs/dev/pts
-umount work/*-RaspbianCloud/stage*/rootfs/dev
-umount work/*-RaspbianCloud/stage*/rootfs/proc
+# umounting partitions in case last build failed
+umount --recursive work/*/stage*/rootfs/{dev,proc,sys} || true
 
-rm -rf work/*-RaspbianCloud
+rm -rf work/*
