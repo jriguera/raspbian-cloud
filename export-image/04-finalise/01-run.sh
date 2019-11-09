@@ -4,8 +4,12 @@ IMG_FILE="${STAGE_WORK_DIR}/${IMG_FILENAME}${IMG_SUFFIX}.img"
 INFO_FILE="${STAGE_WORK_DIR}/${IMG_FILENAME}${IMG_SUFFIX}.info"
 
 on_chroot << EOF
-/sbin/fake-hwclock save
-hardlink -t /usr/share/doc
+if [ -x /sbin/fake-hwclock ]; then
+	/sbin/fake-hwclock save
+fi
+if hash hardlink 2>/dev/null; then
+	hardlink -t /usr/share/doc
+fi
 EOF
 
 if [ -d "${ROOTFS_DIR}/home/${FIRST_USER_NAME}/.config" ]; then
