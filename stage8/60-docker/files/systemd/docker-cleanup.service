@@ -8,7 +8,7 @@ Type=oneshot
 WorkingDirectory=/tmp
 User=root
 Group=root
-ExecStart=/usr/bin/docker system prune -f
+ExecStart=/usr/bin/docker system prune --volumes -f --filter "until=120h"
 
 [Install]
 WantedBy=multi-user.target docker.service
