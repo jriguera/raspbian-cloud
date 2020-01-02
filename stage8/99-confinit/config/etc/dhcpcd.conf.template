@@ -38,7 +38,11 @@ slaac private
 denyinterfaces docker* veth* br-*
 
 # Time out after seconds, instead of the default 30
-timeout 60
+{{ if .Data.system.dhcptimeout }}
+timeout {{ .Data.system.dhcptimeout }}
+{{ else }}
+timeout 300
+{{ end }}
 
 # Generated configuration
 {{ if .Data.system.forceresolvconf }}nohook resolv.conf {{ end }}

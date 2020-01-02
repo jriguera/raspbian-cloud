@@ -4,6 +4,7 @@
 system:
   forceresolvconf: false
   forceipv4: true
+  dhcptimeout: 360
   domain: 'local'
   hostname: raspi
 # dns: [ '1.1.1.1' ]
