@@ -3,6 +3,7 @@ Description=Opensmtpd Mailserver
 Wants=network-online.target
 After=network.target network-online.target
 ConditionPathExists=/etc/smtpd.conf
+ConditionPathExists=/etc/monit/conf-enabled/opensmtpd
 
 [Service]
 Type=simple

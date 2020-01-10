@@ -2,6 +2,7 @@
 Description=Docker cleanup
 After=docker.service
 ConditionFileIsExecutable=/usr/bin/docker
+ConditionPathExists=/etc/monit/conf-enabled/docker
 
 [Service]
 Type=oneshot

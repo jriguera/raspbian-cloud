@@ -3,6 +3,7 @@ Description=Triggers docker prune to delete unused resources
 Requires=docker.service
 After=docker.service
 ConditionFileIsExecutable=/usr/bin/docker
+ConditionPathExists=/etc/monit/conf-enabled/docker
 
 [Timer]
 OnCalendar=*-*-* 12:45:00

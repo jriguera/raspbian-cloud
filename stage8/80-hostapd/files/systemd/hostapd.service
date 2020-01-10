@@ -5,6 +5,7 @@ Before=network.target wpa_supplicant.service
 Conflicts=wpa_supplicant.service
 ConditionPathExists=/etc/hostapd/hostapd.conf
 ConditionFileIsExecutable=/usr/sbin/hostapd
+ConditionPathExists=/etc/monit/conf-enabled/hostapd
 
 [Service]
 Type=forking

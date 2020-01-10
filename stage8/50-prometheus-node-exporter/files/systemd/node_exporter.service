@@ -3,6 +3,7 @@ Description=Prometheus Node Exporter
 Wants=network-online.target
 After=network-online.target
 ConditionFileIsExecutable=/usr/sbin/node_exporter
+ConditionPathExists=/etc/monit/conf-enabled/node_exporter
 
 [Service]
 User=nodexporter

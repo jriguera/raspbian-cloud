@@ -1,9 +1,9 @@
 [Unit]
 Description=A lightweight DHCP and caching DNS server
-Documentation=man:dnsmasq(8)
 Requires=network.target
 Wants=nss-lookup.target
 After=network.target
+ConditionPathExists=/etc/monit/conf-enabled/dnsmasq
 
 [Service]
 Type=dbus
@@ -17,7 +17,6 @@ ExecStartPre=/usr/sbin/dnsmasq --test --conf-dir="${CONFIG_DIR}" $DNSMASQ_OPTS -
 ExecStart=/usr/sbin/dnsmasq --conf-dir="${CONFIG_DIR}" $DNSMASQ_OPTS -k -1 -x /var/run/dnsmasq.pid
 ExecReload=/bin/kill -HUP $MAINPID
 KillMode=process
-Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target

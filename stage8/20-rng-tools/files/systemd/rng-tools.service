@@ -1,6 +1,7 @@
 [Unit]
 Description=Hardware RNG Entropy Gatherer Daemon
 ConditionFileIsExecutable=/usr/sbin/rngd
+ConditionPathExists=/etc/monit/conf-enabled/rngd
 
 [Service]
 Type=simple
@@ -13,7 +14,6 @@ ExecStart=/usr/sbin/rngd -f -r $HRNGDEVICE $RNGDOPTIONS
 ExecStartPost=/bin/sh -c 'sleep 2 && pgrep -x rngd > /run/rngd.pid'
 ExecStopPost=/bin/rm -f /run/rngd.pid
 KillMode=process
-Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
