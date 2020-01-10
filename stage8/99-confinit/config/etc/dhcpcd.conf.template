@@ -37,11 +37,19 @@ slaac private
 # Ignore docker interfaces
 denyinterfaces docker* veth* br-*
 
-# Time out after seconds, instead of the default 30
+{{ if .Data.system.forceipv4 }}
+# Only ipv4
+ipv4only
+{{ end }}
+
+# Instead of the default 30, dhcpcd to wait forever to get a lease
+timeout 0
+
+# Wait these seconds before starting fallback states from the discover phase
 {{ if .Data.system.dhcptimeout }}
-timeout {{ .Data.system.dhcptimeout }}
+reboot {{ .Data.system.dhcptimeout }}
 {{ else }}
-timeout 300
+reboot 360
 {{ end }}
 
 # Generated configuration
@@ -61,6 +69,9 @@ static ip_address={{ $value.fallback.ip }}
     {{ end }}
   {{- with eq $value.profile "dhcp" }}
 interface {{ $key }}
+noalias
+{{ if $value.forceipv4 }}ipv4only
+{{ end -}}
 {{ if $value.fallback }}fallback static_{{ $key }}
 {{ end -}}
   {{ end }}
@@ -71,6 +82,11 @@ interface {{ $key }}
   {{ if $value.profile }}
     {{ if ne $value.profile "dhcp" }}
 interface {{ $key }}
+noarp
+nodhcp
+noalias
+{{ if $value.forceipv4 }}ipv4only
+{{ end -}}
 {{ if $value.nolink }}nolink
 {{ end -}}
 {{ if $value.ip }}static ip_address={{ $value.ip }}
@@ -79,7 +95,7 @@ interface {{ $key }}
 {{ end -}}
 {{ if $value.dns }}static domain_name_servers={{ range $i, $dns := $value.dns }}{{if $i}} {{end}}{{ $dns }}{{end}}
 {{ end -}}
-{{ if $value.forward }}script /etc/hostapd/forwarding-{{ $value.forward }}.sh
+{{ if .Data.hostapd }}{{ if eq .Data.hostapd.iface $key }}{{ if .Data.hostapd.forwarding }}script /etc/hostapd/forwarding-{{ .Data.hostapd.forwarding }}.sh{{ end }}{{ end }}
 {{ end -}}
     {{ end }}
   {{ end }}
