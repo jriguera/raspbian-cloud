@@ -40,4 +40,6 @@ then
   ln -sf ../conf-available/volume-datafs volume-datafs
 fi
 
+monit reload || true
+
 exit 0
