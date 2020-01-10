@@ -1,4 +1,4 @@
-# Start bluetooth on boot?
+# Run bluetooth on boot?
 # compatibility note: if this variable is _not_ found bluetooth will start
 BLUETOOTH_ENABLED=1
 
@@ -16,3 +16,4 @@ BLUETOOTH_ENABLED=1
 # see http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=355497
 HID2HCI_ENABLED=0
 HID2HCI_UNDO=0
+

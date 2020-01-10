@@ -4,6 +4,6 @@
 # Options to pass to sshd
 SSHD_OPTS=
 
-# Enable at startup
+# Start at startup
 SSHD_ENABLED=1
 
