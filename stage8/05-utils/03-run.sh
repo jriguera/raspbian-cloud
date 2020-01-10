@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-VERSION="1.19.4"
+VERSION="1.20.12"
 ARCH="ARM_32-bitv6"
 
 # Install lazydocker
