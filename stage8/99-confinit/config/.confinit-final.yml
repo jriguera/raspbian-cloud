@@ -22,7 +22,7 @@ process:
 
 - source: /boot/config/scripts/final
   operations:
-  - destination: /tmp/confinit
+  - destination: /var/lib/confinit/final
     template: true
     delextension: false
     default:

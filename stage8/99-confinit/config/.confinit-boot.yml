@@ -6,26 +6,12 @@ process:
 - source: /boot/config/etc
   operations:
   - destination: /etc
-    regex: '.*/default/.*\.template'
-  - destination: /etc
-    regex: '.*avahi.*'
-    rendercondition: '{{if not .Data.avahi}}Avahi configuration not defined {{end}}'
-  - destination: /etc
-    regex: '.*hostapd.*'
-    rendercondition: '{{if not .Data.hostapd}}No Wifi Access Point defined {{end}}'
-    permissions:
-    - mode: "0640"
-      glob: '*/hostapd.conf'
-  - destination: /etc
-    regex: '.*bluetooth.*'
-    rendercondition: '{{if not .Data.bluetooth}}Bluetooth disabled{{end}}'
-  - destination: /etc
-    regex: '.*wpa_supplicant.*'
-    permissions:
-    - mode: "0640"
-      glob: '*/wpa_supplicant.conf'
-  - destination: /etc
     regex: '.*\.template'
+    permissions:
+    - glob: '*/wpa_supplicant.conf'
+      mode: "0640"
+    - glob: '*/hostapd.conf'
+      mode: "0640"
   - destination: /etc
     template: false
 
@@ -44,7 +30,7 @@ process:
 
 - source: /boot/config/scripts/boot
   operations:
-  - destination: /tmp/confinit
+  - destination: /var/lib/confinit/boot
     template: true
     delextension: false
     default:
