@@ -33,8 +33,11 @@ publish-hinfo=yes
 publish-workstation=no
 publish-domain=yes
 #disable-user-service-publishing=no
+{{ if .Data.avahi }}
 {{ if .Data.avahi.publishdns }}publish-dns-servers={{ range $i, $domain := .Data.avahi.publishdns }}{{if $i}},{{end}}{{ $domain }}{{end}}{{ end }}
-#publish-resolv-conf-dns-servers=yes
+{{ else }}
+publish-resolv-conf-dns-servers=yes
+{{ end }}
 #publish-aaaa-on-ipv4=yes
 #publish-a-on-ipv6=no
 
@@ -50,3 +53,4 @@ rlimit-fsize=0
 rlimit-nofile=768
 rlimit-stack=4194304
 rlimit-nproc=3
+
