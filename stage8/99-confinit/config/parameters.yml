@@ -28,12 +28,7 @@ system:
         mem: '98% for 10 cycles'
         cpu: '95% for 10 cycles'
         swap: '1%'
-      eth0:
-        upload: "100 MB in last hour"
-        download: "100 MB in last hour"
-      wlan0:
-        upload: "100 MB in last hour"
-        download: "100 MB in last hour"
+
 
 networking:
   eth0:
@@ -47,12 +42,9 @@ networking:
 # wlan0:
 #   profile: 'static'
 #   ip: 10.1.1.1/24
-#   forward: 'eth0'
 #   nolink: true
 
 ### condition services
-
-node_exporter: true
 
 sshd: true
 
@@ -74,12 +66,14 @@ avahi:
   publishdns:
   - 8.8.8.8
 
+node_exporter: true
+
 #bluetooth:
 #  name: "RaspbianCloud Bluez"
 #  discoverable_time: 300
 #  pairable_time: 0
 #  resolving: false
-#  fast_connect: true
+#  fast_connect: false
 #  reconnect_uuids: []
 
 #betterclone:
@@ -102,6 +96,7 @@ avahi:
 
 #hostapd:
 #  iface: wlan0
+#  forwarding: eth0
 #  ssid: raspiwifi
 #  passphrase: 'hola'
 #  hidden: true
