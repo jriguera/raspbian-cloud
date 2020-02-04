@@ -60,7 +60,9 @@ docker:
       MYSQL_ROOT_PASSWORD: 'root'
 
 avahi:
-  ifaces: eth0
+  ifaces:
+  - eth0
+  - wlan0
   publish: true
   browsedomains: []
   publishdns:
