@@ -42,17 +42,20 @@ set_dns() {
         [[ "$count" -lt "16" ]] && unset_dns
         return 0
     fi
-    echo "# Generated at $(date) for interface ${interface} by $0" > $RESOLVCONF_DNSMASQ
-    for dnsaddr in ${new_domain_name_servers}
-    do
-        echo "nameserver ${dnsaddr}" >> $RESOLVCONF_DNSMASQ
-    done
+    {
+        echo "# Generated at $(date) for interface ${interface} by $0"
+        for dnsaddr in ${new_domain_name_servers}
+        do
+            echo "nameserver ${dnsaddr}"
+        done
+    } > $RESOLVCONF_DNSMASQ
 }
 
 unset_dns() {
-    echo > $RESOLVCONF_DNSMASQ
-    echo "nameserver 1.1.1.1" > $RESOLVCONF_DNSMASQ
-    echo "nameserver 8.8.8.8" >> $RESOLVCONF_DNSMASQ
+    {
+        echo "nameserver 1.1.1.1"
+        echo "nameserver 8.8.8.8"
+    } > $RESOLVCONF_DNSMASQ
 }
 
 if test "x${if_up}" = "xtrue"
