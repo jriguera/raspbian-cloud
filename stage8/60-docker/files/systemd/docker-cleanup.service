@@ -1,6 +1,7 @@
 [Unit]
 Description=Docker cleanup
 After=docker.service
+Requires=docker.service
 ConditionFileIsExecutable=/usr/bin/docker
 ConditionPathExists=/etc/monit/conf-enabled/docker
 
@@ -9,9 +10,10 @@ Type=oneshot
 WorkingDirectory=/tmp
 User=root
 Group=root
-ExecStart=/usr/bin/docker system prune --volumes -f --filter "until=120h"
+ExecStart=/usr/bin/docker system prune -f --filter "until=120h"
+ExecStart=/usr/bin/docker system prune --volumes -f
 
 [Install]
-WantedBy=multi-user.target docker.service
+WantedBy=multi-user.target
 Also=docker-cleanup.timer
 

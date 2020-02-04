@@ -7,7 +7,7 @@ ConditionPathExists=/etc/monit/conf-enabled/docker
 
 [Timer]
 OnCalendar=*-*-* 12:45:00
-OnBootSec=30min
+OnBootSec=60min
 
 [Install]
-WantedBy=timers.target docker.service
+WantedBy=timers.target
