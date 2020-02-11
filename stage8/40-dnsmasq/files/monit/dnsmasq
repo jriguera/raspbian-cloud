@@ -3,12 +3,13 @@ check process dnsmasq with pidfile /var/run/dnsmasq.pid
   stop program = "/usr/sbin/service dnsmasq stop"
   #if failed host 127.0.0.1 port 53 type udp protocol dns with timeout 60 seconds then restart
   if 3 restarts within 5 cycles then timeout
-  depends on dnsmasq_bin
+  depends on dnsmasq.exe
   group system
   group dnsmasq
 
-check file dnsmasq_bin with path /usr/sbin/dnsmasq
+check file dnsmasq.exe with path /usr/sbin/dnsmasq
   if does not exist then unmonitor
   include /etc/monit/templates/rootbin
   group system
   group dnsmasq
+
