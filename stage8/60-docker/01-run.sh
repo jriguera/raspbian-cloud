@@ -32,7 +32,7 @@ EOF
 install -m 644 -g root -o root files/systemd/docker-cleanup.timer ${ROOTFS_DIR}/lib/systemd/system
 install -m 644 -g root -o root files/systemd/docker-cleanup.service ${ROOTFS_DIR}/lib/systemd/system
 on_chroot <<EOF
-systemctl enable docker-cleanup.service
+systemctl enable docker-cleanup.timer
 EOF
 
 # Monit
