@@ -1,7 +1,7 @@
 [Unit]
 Description=Pro-active monitoring utility for unix systems
-Wants=network.target multi-user.target cloud-init.target
-After=network.target multi-user.target cloud-init.target
+Wants=network.target
+After=network.target
 ConditionPathExists=!/etc/monit-stopped
 
 [Service]
