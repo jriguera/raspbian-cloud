@@ -1,5 +1,7 @@
 [Unit]
 Description=Hostapd IEEE 802.11 AP, IEEE 802.1X/WPA/WPA2/EAP/RADIUS Authenticator (interface-specific version)
+Requires=sys-subsystem-net-devices-%i.device
+After=sys-subsystem-net-devices-%i.device
 Wants=network.target
 Before=network.target wpa_supplicant.service wpa_supplicant@%i.service
 Conflicts=wpa_supplicant.service wpa_supplicant@%i.service
