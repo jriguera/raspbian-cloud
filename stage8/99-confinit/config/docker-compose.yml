@@ -17,15 +17,6 @@ services:
     networks:
     - frontend
     restart: always
-    deploy:
-      replicas: 1
-      placement:
-        constraints: [node.role == manager]
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
-        window: 120s
 
 networks:
   backend:
