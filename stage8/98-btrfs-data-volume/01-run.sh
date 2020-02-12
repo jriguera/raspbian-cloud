@@ -10,11 +10,11 @@ DATA_LABEL=data
 ###
 
 # remove trailing slash
-DATA_SUBVOL=${BACKUP_SUBVOL%%+(/)}
+DATA_SUBVOL=${DATA_SUBVOL%%+(/)}
 #VOLUME=${VOLUME%%+(/)}
 
 # start slash
-DATA_SUBVOL=${BACKUP_SUBVOL##+(/)}
+DATA_SUBVOL=${DATA_SUBVOL##+(/)}
 #VOLUME_SYSTEMD=$(systemd-escape --path ${VOLUME##+(/)})
 
 # Copy binary
@@ -42,7 +42,7 @@ check filesystem ${LABEL}fs with path ${VOLUME}
     group system
     group ${LABEL}fs
 
-check program ${LABEL}fs-status with path "/bin/btrfs-check -m ${VOLUME}"
+check program ${LABEL}fs.status with path "/bin/btrfs-check -m ${VOLUME}"
     if status != 0 then alert
     if status != 0 for 5 cycles then unmonitor
     depends on ${LABEL}fs
@@ -53,7 +53,7 @@ EOF
 # Systemd
 install -m 644 -g root -o root rpi-btrfs/systemd/volume-data@.service "${ROOTFS_DIR}/lib/systemd/system/${LABEL}@.service"
 install -m 644 -g root -o root rpi-btrfs/systemd/btrfs-raid.target ${ROOTFS_DIR}/lib/systemd/system/
-install -m 644 -g root -o root rpi-btrfs/systemd/btrfs-rebalance@.service "${ROOTFS_DIR}/lib/systemd/system/btrfs-rebalance@${LABEL}.service"
+install -m 644 -g root -o root rpi-btrfs/systemd/btrfs-rebalance@volume-data.service "${ROOTFS_DIR}/lib/systemd/system/btrfs-rebalance@${LABEL}.service"
 
 # udev rules
 install -m 644 -g root -o root rpi-btrfs/udev/* ${ROOTFS_DIR}/etc/udev/rules.d/
@@ -63,10 +63,9 @@ cat <<EOF >"${ROOTFS_DIR}/etc/default/${LABEL}"
 # ${LABEL}@.service configuration
 LABEL="${LABEL}"
 SUBVOLS="--subvol ${DATA_LABEL}:${DATA_MOUNTPOINT}"
-DATA_LABEL="${DATA_LABEL}"
 
-# Only for subvols
-MOUNT_OPTS="defaults,noatime,nodiratime"
+# Mount opts
+MOUNT_OPTS="defaults,noatime,nofail,x-systemd.device-timeout=15s"
 EOF
 
 # mkdir volume
@@ -75,11 +74,13 @@ mkdir -p ${ROOTFS_DIR}${VOLUME}
 
 # Backups
 on_chroot <<EOF
-# Enable devices
+# Enable btrfs target
+systemctl enable btrfs-raid.target
+# systemctl enable btrfs-rebalance@${LABEL}.service
 
 # Enable backups with betterclone
 systemctl enable betterclone-backup.target
 systemctl enable betterclone-restore.target
-systemctl enable "betterclone-restore@`systemd-escape --path ${DATA_SUBVOL}`.service"
-systemctl enable "betterclone-backup@`systemd-escape --path ${DATA_SUBVOL}`.timer"
+systemctl enable "`systemd-escape -p --template=betterclone-restore@.service ${DATA_SUBVOL}`"
+systemctl enable "`systemd-escape -p --template=betterclone-backup@.timer ${DATA_SUBVOL}`"
 EOF
