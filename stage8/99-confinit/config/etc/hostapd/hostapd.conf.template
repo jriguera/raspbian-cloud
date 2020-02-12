@@ -270,7 +270,7 @@ wpa=2
 # wpa_psk (dot11RSNAConfigPSKValue)
 # wpa_passphrase (dot11RSNAConfigPSKPassPhrase)
 #wpa_psk=0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
-{{ if .Data.hostapd.passphrase }}wpa_passphrase={{ .Data.hostapd.passphrase }}{{ else }}wpa_passphrase={{.Data.system.hostname }{{ end }}
+{{ if .Data.hostapd.passphrase }}wpa_passphrase={{ .Data.hostapd.passphrase }}{{ else }}wpa_passphrase={{.Data.system.hostname }}{{ end }}
 
 
 # Optionally, WPA PSKs can be read from a separate text file (containing list
