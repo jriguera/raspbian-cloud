@@ -17,3 +17,4 @@ mkdir -p /etc/monit/conf-enabled
 EOF
 
 install -m 755 -g root -o root files/update-motd.d/* ${ROOTFS_DIR}/etc/update-motd.d/
+install -m 755 -g root -o root files/bin/* ${ROOTFS_DIR}/usr/bin/

@@ -1,0 +1,5 @@
+check program systemd.status with path "/usr/bin/systemd-monit-status"
+if status != 0 for 1 cycles then alert
+group system
+group systemd
+
