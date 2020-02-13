@@ -3,7 +3,7 @@
 ## stop may be cascaded to them before the filesystem will become full and data
 ## lost.
 #
-check filesystem rootfs with path /
+check filesystem root.fs with path /
     if space usage > {{.Data.system.monit.alerts.fs }} then alert
     if inode usage > 95% then alert
     if changed fsflags then alert
