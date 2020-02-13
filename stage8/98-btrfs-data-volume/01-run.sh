@@ -19,13 +19,7 @@ DATA_SUBVOL=${DATA_SUBVOL##+(/)}
 
 # Copy binary
 install -m 755 -g root -o root rpi-btrfs/bin/* ${ROOTFS_DIR}/bin
-#install -m 755 -g root -o root rpi-btrfs/requirements.txt ${ROOTFS_DIR}/tmp
 
-## Install requiremets
-#on_chroot <<EOF
-#pip3 install -r /tmp/requirements.txt
-#rm -f /tmp/requirements.txt
-#EOF
 
 # Monit
 install -m 775 -g root -o root -d ${ROOTFS_DIR}/etc/monit/conf-available/
@@ -35,14 +29,14 @@ cat <<EOF >"${ROOTFS_DIR}/etc/monit/conf-available/${LABEL}fs"
 ## stop may be cascaded to them before the filesystem will become full and data
 ## lost.
 #
-check filesystem ${LABEL}fs with path ${VOLUME}
+check filesystem ${LABEL}.fs with path ${VOLUME}
     if space usage > 90% for 5 times within 15 cycles then alert
     if inode usage > 95% then alert
     if changed fsflags then alert
     group system
     group ${LABEL}fs
 
-check program ${LABEL}fs.status with path "/bin/btrfs-check -m ${VOLUME}"
+check program ${LABEL}.status with path "/bin/btrfs-check-raid ${VOLUME}"
     if status != 0 then alert
     if status != 0 for 5 cycles then unmonitor
     depends on ${LABEL}fs
