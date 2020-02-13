@@ -24,7 +24,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define :rpigen do |rpigen|
       # Every Vagrant virtual environment requires a box to build off of.
       #rpigen.vm.box = "ubuntu/xenial32"
-      rpigen.vm.box = "jriguera/rpibuilder-buster-10.1-i386"
+      rpigen.vm.box = "jriguera/rpibuilder-buster-10.2-i386"
 
       # Create a forwarded port mapping which allows access to a specific port
       # within the machine from a port on the host machine. In the example below,
