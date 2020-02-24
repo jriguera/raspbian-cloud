@@ -4,9 +4,6 @@
 [submodule "stage8/70-betterclone-backups/betterclone"]
 	path = stage8/70-betterclone-backups/betterclone
 	url = https://github.com/jriguera/betterclone.git
-[submodule "stage8/98-btrfs-data-volume/rpi-btrfs"]
-	path = stage8/98-btrfs-data-volume/rpi-btrfs
-	url = https://github.com/jriguera/rpi-btrfs.git
 [submodule "stage8/61-docker-compose/docker-rpi-dockercompose"]
 	path = stage8/61-docker-compose/docker-rpi-dockercompose
 	url = https://github.com/jriguera/docker-rpi-dockercompose.git
