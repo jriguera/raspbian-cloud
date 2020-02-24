@@ -1,0 +1,34 @@
+logoutput: split
+loglevel: debug
+datafile: /boot/config/parameters.yml
+
+process:
+- source: /boot/config/etc
+  operations:
+  - destination: /etc
+    regex: '.*\.template'
+    permissions:
+    - glob: '*/wpa_supplicant.conf'
+      mode: "0640"
+    - glob: '*/hostapd.conf'
+      mode: "0640"
+  - destination: /etc
+    template: false
+
+- source: /boot/config
+  operations:
+  - destination: /etc/docker-compose
+    regex: 'docker-compose\.yml'
+    template: false
+
+- source: /boot/config/scripts/boot
+  operations:
+  - destination: /var/lib/confinit/boot
+    template: true
+    delextension: false
+    default:
+      mode:
+        file: "0755"
+    command:
+      cmd: ["{{.Destination}}"]
+

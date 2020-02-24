@@ -1,0 +1,61 @@
+{{ range $key, $value := .Data.networking -}}
+{{ if eq $key "wlan1" -}}
+[Match]
+Name={{ $key }}
+{{ if $value.mac }}MACAddress={{ $value.mac }}{{ end }}
+
+[Network]
+{{ if $value.defaultroute -}}
+DefaultRouteOnDevice=yes
+DNSDefaultRoute=yes
+{{ end -}}
+{{ if $value.nolink -}}
+ConfigureWithoutCarrier=true
+IgnoreCarrierLoss=true
+{{ end -}}
+{{ if .Data.hostapd }}{{ if eq .Data.hostapd.iface $key }}{{ if .Data.hostapd.forwarding -}}
+IPForward={{ if $value.forceipv4 }}ipv4{{ else}}yes{{ end }}
+IPMasquerade=yes
+{{ end }}{{ end }}{{ end -}}
+{{ if $value.profile -}}
+  {{- if eq $value.profile "dhcp" -}}
+DHCP={{ if $value.forceipv4 }}ipv4{{ else}}yes{{ end }}
+    {{- if $value.fallback }}
+LinkLocalAddressing={{ if $value.forceipv4 }}ipv4-fallback{{ else }}fallback{{ end }}
+Address={{ $value.fallback.ip }}
+{{ if $value.fallback.gw }}Gateway={{ $value.fallback.gw }}{{ end }}
+{{ if $value.fallback.dns }}DNS={{ range $i, $dns := $value.fallback.dns }}{{ if $i }} {{ end }}{{ $dns }}{{ end }}{{ end }}
+{{ if $value.fallback.domain }}Domains={{ $value.fallback.domain }}{{ end }}
+    {{- end }}
+
+[DHCPv4]
+UseDomains=true
+UseDNS=true
+UseNTP=true
+UseHostname=true
+UseTimezone=false
+UseRoutes=true
+MaxAttempts={{ if $value.fallback.dhcptimeout }}{{ $value.fallback.dhcptimeout }}{{ else }}infinity{{ end }}
+RouteMetric={{ if $value.routemetric }}{{ $value.routemetric }}{{ else }}25{{ end }}
+{{ if $value.clientidentifier -}}
+ClientIdentifier=duid-only
+DUIDType=uuid
+DUIDRawData={{ $value.clientidentifier }}
+{{ else -}}
+ClientIdentifier=mac
+{{ end }}
+[DHCPv6]
+UseDomains=true
+UseDNS=true
+UseNTP=true
+  {{- end -}}
+  {{- if eq $value.profile "static" -}}
+Address={{ $value.ip }}
+{{ if $value.gw }}Gateway={{ $value.gw }}{{ end }}
+{{ if $value.dns }}DNS={{ range $i, $dns := $value.dns }}{{ if $i }} {{ end }}{{ $dns }}{{ end }}{{ end }}
+{{ if $value.domain }}Domains={{ $value.domain }}{{ end }}
+  {{- end }}
+{{ end -}}
+{{ end -}}
+{{ end -}}
+
