@@ -1,4 +1,5 @@
-resize_rootfs: true
+# Disable because of systemd unit resizerootfs.service
+resize_rootfs: false
 
 # growpart entry is a dict, if it is not present at all
 # in config, then the default is used ({'mode': 'auto', 'devices': ['/']})
@@ -25,8 +26,7 @@ resize_rootfs: true
 #
 #   true indicates that /etc/growroot-disabled should be ignored
 #
-growpart:
-  mode: gpart
-  devices: ['/']
-  ignore_growroot_disabled: false
-
+#growpart:
+#  mode: gpart
+#  devices: ['/']
+#  ignore_growroot_disabled: false

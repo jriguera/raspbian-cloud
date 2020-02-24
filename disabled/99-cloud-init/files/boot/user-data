@@ -112,7 +112,7 @@ manage_resolv_conf: false
 # by default, the resizefs is done early in boot, and blocks
 # if resize_rootfs is set to 'noblock', then it will be run in parallel
 #
-resize_rootfs: true
+#resize_rootfs: true
 
 ## Update apt database on first boot
 # (ie run apt-get update)

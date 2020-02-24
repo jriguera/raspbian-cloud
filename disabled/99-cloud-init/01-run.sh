@@ -6,9 +6,7 @@ install -m 644 -g root -o root files/templates/sources.list.debian.tmpl ${ROOTFS
 
 install -m 644 -g root -o root files/boot/* ${ROOTFS_DIR}/boot/
 
-mkdir -p ${ROOTFS_DIR}/var/lib/cloud/scripts/per-once
-install -m 755 -g root -o root files/scripts/vendor/00-resize-root-fs.sh ${ROOTFS_DIR}/var/lib/cloud/scripts/per-once
-
+# fix bug
 install -m 644 -g root -o root files/bugfix/cc_disk_setup.py ${ROOTFS_DIR}/usr/lib/python3/dist-packages/cloudinit/config/
 
 on_chroot <<EOF
