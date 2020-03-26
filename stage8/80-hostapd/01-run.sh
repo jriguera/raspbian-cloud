@@ -9,6 +9,7 @@ mkdir -p ${ROOTFS_DIR}/etc/systemd/system/wpa_supplicant.service.d
 mkdir -p ${ROOTFS_DIR}/etc/systemd/system/wpa_supplicant@wlan0.service.d
 install -m 644 -g root -o root files/systemd/wpa_supplicant.conf ${ROOTFS_DIR}/etc/systemd/system/wpa_supplicant.service.d
 install -m 644 -g root -o root files/systemd/wpa_supplicant.conf ${ROOTFS_DIR}/etc/systemd/system/wpa_supplicant@wlan0.service.d
+install -m 644 -g root -o root files/systemd/wpa_supplicant.conf ${ROOTFS_DIR}/etc/systemd/system/wpa_supplicant@wlan1.service.d
 
 install -m 644 -g root -o root files/systemd/hostapd@.service ${ROOTFS_DIR}/lib/systemd/system
 install -m 644 -g root -o root files/systemd/hostapd.service ${ROOTFS_DIR}/lib/systemd/system

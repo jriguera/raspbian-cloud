@@ -2,7 +2,7 @@
 Description=Hostapd IEEE 802.11 AP, IEEE 802.1X/WPA/WPA2/EAP/RADIUS Authenticator
 Wants=network.target
 Before=network.target wpa_supplicant.service
-Conflicts=wpa_supplicant.service
+#Conflicts=wpa_supplicant.service
 ConditionPathExists=/etc/hostapd/hostapd.conf
 ConditionFileIsExecutable=/usr/sbin/hostapd
 ConditionPathExists=/etc/monit/conf-enabled/hostapd
