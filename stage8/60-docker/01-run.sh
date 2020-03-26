@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
-VERSION='5:18.09.8~3-0~debian-buster'
 VERSION='5:19.03.5~3-0~raspbian-buster'
+VERSION='5:19.03.7~3-0~raspbian-buster'
 
 # Install and enable docker
 on_chroot <<EOF
