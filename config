@@ -1,6 +1,13 @@
 # pi-gen options
 DEPLOY_ZIP=0
 IMG_NAME='RaspbianCloud'
+RELEASE='buster'
+# Defined later in the stages!
+TIMEZONE_DEFAULT='Europe/Amsterdam'
+FIRST_USER_NAME='pi'
+FIRST_USER_PASS="raspberry"
+# STAGE_LIST=stage*
+
 
 # mender-convert
 if ls deploy/*optimized.img >/dev/null 2>&1
