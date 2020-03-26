@@ -13,6 +13,8 @@ systemctl enable systemd-resolved.service
 apt-get -y purge openresolv
 
 # Make a link to the systemd resolver
-rm -f /etc/resolv.conf /etc/resolvconf /etc/resolv.conf.head
+rm -rf /etc/resolvconf /etc/resolv.conf.head
+mkdir -p /run/systemd/resolve
+mv /etc/resolv.conf /run/systemd/resolve/stub-resolv.conf
 ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 EOF
