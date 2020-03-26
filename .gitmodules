@@ -10,3 +10,6 @@
 [submodule "stageZZ/99-confinit/confinit"]
 	path = stageZZ/99-confinit/confinit
 	url = https://github.com/jriguera/confinit.git
+[submodule "stageZZ/90-btrfs-data-volume/rpi-btrfs"]
+	path = stageZZ/90-btrfs-data-volume/rpi-btrfs
+	url = https://github.com/jriguera/rpi-btrfs.git
