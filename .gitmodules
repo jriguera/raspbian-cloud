@@ -13,3 +13,6 @@
 [submodule "stageZZ/90-btrfs-data-volume/rpi-btrfs"]
 	path = stageZZ/90-btrfs-data-volume/rpi-btrfs
 	url = https://github.com/jriguera/rpi-btrfs.git
+[submodule "stage9/99-GPIO-display-drivers/LCD-show"]
+	path = stage9/99-GPIO-display-drivers/LCD-show
+	url = https://github.com/goodtft/LCD-show.git
