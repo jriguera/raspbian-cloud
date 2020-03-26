@@ -29,6 +29,14 @@ on_chroot <<EOF
 mv "/lib/systemd/system/confinit-boot@.service" "/lib/systemd/system/confinit-boot@`systemd-escape --path ${BOOT_CONFIG_FOLDER}`.service"
 mv "/lib/systemd/system/confinit-final@.service" "/lib/systemd/system/confinit-final@`systemd-escape --path ${BOOT_CONFIG_FOLDER}`.service"
 
+# Remove resolv.conf link
+rm /etc/resolv.conf
+{
+    echo "nameserver 127.0.0.1"
+    echo "nameserver 1.1.1.1"
+    echo "nameserver 8.8.8.8"
+} > /etc/resolv.conf
+
 # Enable target
 systemctl enable confinit.target
 
