@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+set -o pipefail  # exit if pipe command fails
+[ -z "$DEBUG" ] || set -x
+export LC_ALL=C
+
+PROGRAM=${PROGRAM:-$(basename "${BASH_SOURCE[0]}")}
+
+if [[ $(id -u) -ne 0 ]]
+then
+    echo "Error, program not running as root!"
+    return 1
+fi
+
+while [[ $# -gt 0 ]]
+do
+    key="${1}"
+    case "${key}" in
+        -h|--help)
+            echo "$PROGRAM <mountpoint>"
+            echo "Resizes device partition and filesystem of the mountpoint passed as argument"
+            exit 0
+        ;;
+        *)
+            POSITIONAL+=("$1")  # save it in an array for later
+            shift               # past argument
+        ;;
+    esac
+done
+if [[ ${#POSITIONAL[@]} -ne 1 ]]
+then
+    echo "Not enough parameters!. See usage."
+    exit 1
+fi
+FS="${POSITIONAL[0]}"
+
+# Just extracts root partition and removes partition number to get the device
+# name eg. /dev/sda1 becomes /dev/sda
+ROOT="$(lsblk --raw --path  --output NAME,MOUNTPOINT | grep "${FS}\$")"
+if [[ -z "$ROOT" ]]
+then
+    echo "Error, filesystem '$FS' not found."
+    exit 1
+fi
+ROOTPART="${ROOT%% */}"
+ROOTDEV="${ROOTPART%p*}"
+ROOTPARTNO="${ROOTPART##${ROOTDEV}p}"
+(
+    set -eo pipefail
+    # Lock
+    flock -n -x 250 || exit 1
+
+    echo "Resizing $ROOT Device $ROOTDEV, partition $ROOTPARTNO ..."
+    echo
+
+    # Use sfdisk to extend partition to all available free space on device.
+    echo ",+" | sfdisk --force $ROOTDEV --partno $ROOTPARTNO --no-reread --no-tell-kernel
+
+    # Wait for all pending udev events to be handled
+    sleep 5
+    udevadm settle
+    sleep 5
+
+    # detect the changes to partition (we extended it).
+    partprobe --summary $ROOTDEV
+
+    # remount the root partition in read write mode
+    mount -o remount,rw $ROOTPART
+
+    # Finally grow the file system on root partition
+    resize2fs $ROOTPART
+    RC=$?
+    
+    echo "Resizing $ROOT. Done"
+    exit $RC 
+
+) 250<${ROOTDEV}
+
+

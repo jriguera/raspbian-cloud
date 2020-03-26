@@ -1,0 +1,19 @@
+[Unit]
+Description=Resize root file system
+After=local-fs.target
+Before=sysinit.target
+Before=shutdown.target
+DefaultDependencies=no
+RequiresMountsFor=/
+ConditionFileIsExecutable=/bin/resize-fs
+# ConditionFirstBoot=yes
+
+[Service]
+Type=oneshot
+TimeoutSec=infinity
+ExecStart=/bin/resize-fs /
+ExecStartPost=/bin/systemctl --no-reload disable %n
+
+[Install]
+WantedBy=local-fs.target
+
