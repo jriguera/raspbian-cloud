@@ -2,7 +2,7 @@
 Description=Pro-active monitoring utility for unix systems
 Wants=network.target
 After=network.target
-ConditionPathExists=!/etc/monit-stopped
+ConditionPathExists=!/etc/monit/monit-disabled
 
 [Service]
 EnvironmentFile=-/etc/default/monit
