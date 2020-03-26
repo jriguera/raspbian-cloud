@@ -13,11 +13,16 @@
 
 [Resolve]
 {{ if .Data.system.dns }}
-FallbackDNS={{range .Data.system.dns }}{{.}} {{ end }}
+DNS={{range .Data.system.dns }}{{.}} {{ end }}
+{{ else }}
+DNS=127.0.0.1
 {{ end }}
 #Domains=
 #LLMNR=yes
 #DNSSEC=no
+# Caching is turned off implicitly if the configured DNS server is on a host-local IP address (such as 127.0.0.1 or ::1), in order to avoid duplicate local caching.
+#Cache=no-negative
 Cache=yes
+# DNSmasq will take care of DNSStubListener, only files should be created for dnsmasq
 DNSStubListener=no
 

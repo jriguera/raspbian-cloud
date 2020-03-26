@@ -1,6 +1,6 @@
 logoutput: split
 loglevel: debug
-datafile: /boot/config/parameters.yml
+datafile: parameters.yml
 
 special_permissions: &permissions
 - glob: '*.conf'
@@ -23,31 +23,23 @@ special_permissions: &permissions
   mode: "0755"
 
 process:
-- source: /boot/config/etc
+- source: etc
   operations:
-  - destination: /etc
-    delete:
-      prestart: true
+  - destination: /tmp/devel/etc
     regex: '.*\.template'
     permissions: *permissions
-  - destination: /etc
+  - destination: /tmp/raspi/etc
     template: false
     permissions: *permissions
 
-- source: /boot/config
+- source: scripts
   operations:
-  - destination: /etc/docker-compose
-    regex: 'docker-compose\.yml'
-    template: false
-
-- source: /boot/config/scripts/boot
-  operations:
-  - destination: /var/run/confinit/boot
-    template: true
+  - destination: /tmp/devel/exec
     delextension: false
-    default:
-      mode:
-        file: "0755"
+    template: true
+    delete:
+      prestart: true
+      afterexec: false
     command:
-      cmd: ["{{.Destination}}"]
+      cmd: ["/bin/true"]
 

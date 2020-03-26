@@ -1,3 +1,4 @@
+{{ range $iface, $params := .Data.networking }}{{ if eq $iface "wlan0" -}}
 ##### wpa_supplicant configuration file
 #
 # This file describes configuration file format and lists all available option.
@@ -84,13 +85,11 @@ country={{ .Data.system.country }}
 device_name={{ .Data.system.hostname }}
 
 # Wifi
-{{ range $iface, $params := .Data.networking }}
-{{ if eq $iface "wlan0" }}
 {{ if .Data.hostapd eq .Data.hostapd.iface $iface }}
 # {{ $iface }} defined in hostapd
-{{ else if $params.wlan }}
+{{ else if $params.Wlan }}
 network={
-    {{ range $k, $v := $params.wlan }}
+    {{ range $k, $v := $params.Wlan }}
     {{ if eq $k "ssid" -}}{{ $k }}="{{ $v -}}"
     {{ else if eq $k "psk" -}}{{ $k }}="{{ $v -}}"
     {{ else -}}{{ $k }}={{ $v -}}
@@ -98,6 +97,5 @@ network={
 {{ end }}
 }
 {{ end }}
-{{ end }}
-{{ end }}
-
+{{ end -}}
+{{ end -}}
