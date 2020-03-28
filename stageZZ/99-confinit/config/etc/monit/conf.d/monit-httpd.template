@@ -14,7 +14,9 @@ set httpd
     port {{ if .Data.monit.Port }}{{ .Data.monit.Port }}{{ else }}2812{{ end }}
 {{ if .Data.monit.ListenAddress }}{{ range $i, $ip := .Data.monit.ListenAddress }}    address {{ $ip }}
 {{ end }}{{ else }}    address 127.0.0.1{{ end }}
+    allow 127.0.0.1
     allow @admin
+    allow {{ randomString 6 }}:{{ randomString 10 }}
 {{ if .Data.monit.Users }}{{ range $k, $v := .Data.monit.Users }}    allow {{ $k }}:{{ $v }}
 {{ end }}{{ end }}
 {{ end }}
