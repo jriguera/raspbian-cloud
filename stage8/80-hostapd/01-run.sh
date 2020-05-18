@@ -14,6 +14,10 @@ install -m 644 -g root -o root files/systemd/wpa_supplicant.conf ${ROOTFS_DIR}/e
 install -m 644 -g root -o root files/systemd/hostapd@.service ${ROOTFS_DIR}/lib/systemd/system
 install -m 644 -g root -o root files/systemd/hostapd.service ${ROOTFS_DIR}/lib/systemd/system
 
+# Enable 5GHz Wifi
+rm -f "${ROOTFS_DIR}/var/lib/systemd/rfkill/platform-3f300000.mmcnr:wlan"
+rm -f "${ROOTFS_DIR}/var/lib/systemd/rfkill/platform-fe300000.mmcnr:wlan"
+
 on_chroot <<EOF
 # Enable service
 systemctl enable hostapd.service
