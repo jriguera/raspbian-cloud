@@ -1,14 +1,12 @@
 #!/bin/bash -e
 
-VERSION="1.20.12"
-ARCH="ARM_32-bitv6"
+VERSION="3.3.0"
+ARCH="arm"
 
 # Install lazydocker
 on_chroot <<EOF
-curl -sSL https://github.com/amir20/dozzle/releases/download/v${VERSION}/dozzle_${VERSION}_Linux_${ARCH}.tar.gz -o /tmp/dozzle.tar.gz
-tar -xvf /tmp/dozzle.tar.gz -C /usr/sbin/ --wildcards --no-anchored dozzle
-chown root.root /usr/sbin/dozzle
-chmod a+x /usr/sbin/dozzle
-rm -f /tmp/dozzle.tar.gz
+curl -sSL https://github.com/mikefarah/yq/releases/download/${VERSION}/yq_linux_${ARCH} -o /usr/local/bin/yq
+chown root.root /usr/local/bin/yq
+chmod a+x /usr/local/bin/yq
 EOF
 
