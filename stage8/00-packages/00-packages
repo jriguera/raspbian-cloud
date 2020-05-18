@@ -18,4 +18,5 @@ ed
 ncdu
 bash-completion
 usbutils
-
+wavemon
+tshark
