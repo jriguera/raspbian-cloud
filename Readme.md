@@ -61,6 +61,13 @@ Install Vagrant: https://www.vagrantup.com/ and Virtualbox: https://www.virtualb
 If you are using Debian or Ubuntu, just install them with APT. 
 
 Run:
+Fetch remote `pi-gen` dependency:
+```
+git submodule init
+git submodule update
+```
+
+Bring the VM up
 ```
 vagrant up
 ```
